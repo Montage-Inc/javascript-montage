@@ -3,8 +3,81 @@ import _ from 'lodash';
 
 export class Client {
   constructor(params) {
+    params.api_version = params.api_version || 1;
     this.params = params;
+    this.url_prefix = `http://${params.domain}.dev.montagehot.club/api/v${params.api_version}/`;
   }
+  schemas() {
+    return this.request(`schemas/`);
+  }
+  schema(name) {
+    return this.request(`schemas/${name}/`);
+  }
+  documents(schema, query) {
+    var params = query ? query.toJS() : {};
+    return this.request(`schemas/${schema}/documents/`, "GET", params);
+  }
+  document(schema, document_uuid) {
+    return this.request(`schemas/${schema}/documents/${document_uuid}/`);
+  }
+  document_cursor(schema, cursor) {
+    var params = {cursor};
+    return this.request(`schemas/${schema}/documents/`, "GET", params);
+  }
+  create_document(schema, document) {
+    return this.request(`schemas/${schema}/documents/create/`, "POST", document);
+  }
+  update_document(schema, document_uuid, document) {
+    return this.request(`schemas/${schema}/documents/${document_uuid}/`, "POST", document);
+  }
+  delete_document(schema, document_uuid) {
+    return this.request(`schemas/${schema}/documents/${document_uuid}/`, "DELETE");
+  }
+  auth() {
+    return this.request("auth/", "POST", {
+      username: this.params.username,
+      password: this.params.password,
+    });
+  }
+  request(url, method, data) {
+    return new Promise((resolve, reject) => {
+      url = this.url_prefix + url;
+      method = method && method.toUpperCase() || "GET";
+      var headers = {
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+        'User-Agent': 'Montage Javascript v1',
+      }
+      if (this.params.token) {
+        headers.Authorization = `Token ${this.params.token}`;
+      }
+      var req = Superagent(method, url).set(headers);
+
+      //send our cookies if we have them
+      if (req.withCredentials) {
+        req = req.withCredentials();
+      }
+
+      if (data) {
+        if (method === "GET" || method === "HEAD" || method === "OPTIONS") {
+          req.query(data);
+        } else {
+          req.send(JSON.stringify(data));
+        }
+      }
+
+      req.end(function(error, res) {
+        if (error) {
+          reject(error);
+        } else if (res.ok) {
+          resolve(res.body);
+        } else {
+          reject(res);
+        }
+      });
+    });
+  }
+  //TODO files api
 }
 
 export class Query {

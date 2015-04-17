@@ -36,8 +36,10 @@ Create a client object::
     domain: "test" //Your Montage subdomain
   });
 
-  var response = client.auth;
-  var token = response.token.value;
+  client.auth().then(response => {
+    var token = response.token.value;
+  });
+
 
   //client with only a token (recommended)
   var client = new Montage.Client({
@@ -51,5 +53,7 @@ Using a client::
   var query = new Montage.Query()
     .where({"rating__gt": 4})
     .limit(10)
-    .order("rating", -1)
-  client.documents("movies", query)
+    .order("rating", -1);
+  client.documents("movies", query).then(movies => {
+    console.log(movies);
+  });
