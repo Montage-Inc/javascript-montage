@@ -2,7 +2,7 @@ import Superagent from 'superagent';
 import _ from 'lodash';
 
 export class Client {
-  constructor(params) {
+  constructor(params = {}) {
     params.api_version = params.api_version || 1;
     this.params = params;
     this.url_prefix = `http://${params.domain}.dev.montagehot.club/api/v${params.api_version}/`;
@@ -51,7 +51,7 @@ export class Client {
       if (this.params.token) {
         headers.Authorization = `Token ${this.params.token}`;
       }
-      var req = Superagent(method, url).set(headers);
+      var req = this._agent(method, url).set(headers);
 
       //send our cookies if we have them
       if (req.withCredentials) {
@@ -76,6 +76,9 @@ export class Client {
         }
       });
     });
+  }
+  _agent(...args) {
+    return Superagent(...args);
   }
   //TODO files api
 }
@@ -109,6 +112,10 @@ export class Query {
   }
   filter(params) {
     return this._merge({filter: params});
+  }
+  where(params) {
+    //alias
+    return this.filter(params);
   }
   toJS() {
     return this._state;
