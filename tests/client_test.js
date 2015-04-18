@@ -40,6 +40,8 @@ describe('Client', () => {
   describe('schemas', () => {
     it('returns promisde from schemas endpoint', () => {
       emitter.once('request', function(request) {
+        //expect(request.url).to.be('/schemas/');
+        expect(request.method).to.be('GET');
         request.callback(null, {
           ok: true,
           body: 'schemas',
