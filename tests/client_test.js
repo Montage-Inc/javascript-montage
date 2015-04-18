@@ -1,6 +1,9 @@
 import expect from 'expect.js';
 import {Client} from '../src/index';
 import _ from 'lodash';
+import {EventEmitter} from 'events';
+
+var emitter = new EventEmitter();
 
 
 class MockedAgent {
@@ -22,6 +25,7 @@ class MockedAgent {
   }
   end(callback) {
     this.callback = callback;
+    emitter.emit('request', this);
     return this;
   }
 }
@@ -35,10 +39,16 @@ class MockedClient extends Client {
 describe('Client', () => {
   describe('schemas', () => {
     it('returns promisde from schemas endpoint', () => {
+      emitter.once('request', function(request) {
+        request.callback(null, {
+          ok: true,
+          body: 'schemas',
+        });
+      });
       var client = new MockedClient();
       var promise = client.schemas();
-      return promise.then(function(success) {
-
+      return promise.then(function(response) {
+        expect(response).to.be('schemas')
       });
     });
   });
