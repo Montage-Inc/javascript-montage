@@ -43,33 +43,38 @@ var Client = (function () {
     key: 'documents',
     value: function documents(schema, query) {
       var params = query ? query.toJS() : {};
-      return this.request('schemas/' + schema + '/documents/', 'POST', params);
+      return this.request('schemas/' + schema + '/query/', 'POST', params);
     }
   }, {
     key: 'document',
     value: function document(schema, document_uuid) {
-      return this.request('schemas/' + schema + '/documents/' + document_uuid + '/');
+      return this.request('schemas/' + schema + '/' + document_uuid + '/');
     }
   }, {
     key: 'document_cursor',
     value: function document_cursor(schema, cursor) {
       var params = { cursor: cursor };
-      return this.request('schemas/' + schema + '/documents/', 'GET', params);
+      return this.request('schemas/' + schema + '/', 'GET', params);
     }
   }, {
     key: 'create_document',
     value: function create_document(schema, document) {
-      return this.request('schemas/' + schema + '/documents/create/', 'POST', document);
+      return this.create_documents(schema, [document]);
+    }
+  }, {
+    key: 'create_documents',
+    value: function create_documents(schema, documents) {
+      return this.request('schemas/' + schema + '/save/', 'POST', documents);
     }
   }, {
     key: 'update_document',
     value: function update_document(schema, document_uuid, document) {
-      return this.request('schemas/' + schema + '/documents/' + document_uuid + '/', 'POST', document);
+      return this.request('schemas/' + schema + '/' + document_uuid + '/', 'POST', document);
     }
   }, {
     key: 'delete_document',
     value: function delete_document(schema, document_uuid) {
-      return this.request('schemas/' + schema + '/documents/' + document_uuid + '/', 'DELETE');
+      return this.request('schemas/' + schema + '/' + document_uuid + '/', 'DELETE');
     }
   }, {
     key: 'auth',

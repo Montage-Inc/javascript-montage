@@ -78,7 +78,7 @@ describe('Client', () => {
   describe('documents', () => {
     it('returns promise from documents endpoint', () => {
       emitter.once('request', (request) => {
-        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/documents/');
+        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/query/');
         expect(request.method).to.be('POST');
         request.callback(null, {
           ok: true,
@@ -92,7 +92,7 @@ describe('Client', () => {
 
     it('sends query params as get params', () => {
       emitter.once('request', (request) => {
-        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/documents/');
+        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/query/');
         expect(JSON.parse(request.body).filter).to.eql({
           rating__gt: 5
         });
@@ -112,7 +112,7 @@ describe('Client', () => {
   describe('document', () => {
     it('returns promise from document endpoint', () => {
       emitter.once('request', (request) => {
-        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/documents/foobar/');
+        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/foobar/');
         expect(request.method).to.be('GET');
         request.callback(null, {
           ok: true,
@@ -128,7 +128,7 @@ describe('Client', () => {
   describe('document cursor', () => {
     it('returns promise from documents endpoint with a cursor param', () => {
       emitter.once('request', (request) => {
-        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/documents/');
+        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/');
         expect(request.method).to.be('GET');
         expect(request.getParams).to.be.eql({cursor: 'DEADBEAF'});
         request.callback(null, {
@@ -145,9 +145,9 @@ describe('Client', () => {
   describe('create document', () => {
     it('returns promise from create document endpoint with post data', () => {
       emitter.once('request', (request) => {
-        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/documents/create/');
+        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/save/');
         expect(request.method).to.be('POST');
-        expect(request.body).to.be.eql(JSON.stringify({title: 'Star Wars'}));
+        expect(request.body).to.be.eql(JSON.stringify([{title: 'Star Wars'}]));
         request.callback(null, {
           ok: true,
           body: {id: 'aww yeah'},
@@ -162,7 +162,7 @@ describe('Client', () => {
   describe('update document', () => {
     it('returns promise from update document endpoint with post data', () => {
       emitter.once('request', (request) => {
-        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/documents/foobar/');
+        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/foobar/');
         expect(request.method).to.be('POST');
         expect(request.body).to.be.eql(JSON.stringify({title: 'Star Wars'}));
         request.callback(null, {
@@ -179,7 +179,7 @@ describe('Client', () => {
   describe('delete document', () => {
     it('returns promise from delete document endpoint', () => {
       emitter.once('request', (request) => {
-        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/documents/foobar/');
+        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/foobar/');
         expect(request.method).to.be('DELETE');
         request.callback(null, {
           ok: true,
