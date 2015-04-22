@@ -75,7 +75,7 @@ export class Client {
         } else if (res.ok) {
           resolve(res.body);
         } else {
-          reject(res);
+          reject(res.error);
         }
       });
     });
