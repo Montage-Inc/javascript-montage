@@ -27,9 +27,9 @@ export class Client {
   *chunked_document_cursor(schema, cursor) {
     while (cursor) {
       yield this.raw_document_cursor(schema, cursor).then(payload => {
-        if (payload && payload.next) {
-          cursor = payload.next;
-        } else {
+        try {
+          cursor = payload.cursors.next;
+        } catch (e) {
           cursor = null;
         }
         return payload;

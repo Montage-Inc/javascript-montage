@@ -69,9 +69,9 @@ var Client = (function () {
 
             context$2$0.next = 3;
             return this.raw_document_cursor(schema, cursor).then(function (payload) {
-              if (payload && payload.next) {
-                cursor = payload.next;
-              } else {
+              try {
+                cursor = payload.cursors.next;
+              } catch (e) {
                 cursor = null;
               }
               return payload;
