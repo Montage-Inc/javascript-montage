@@ -93,7 +93,8 @@ describe('Client', () => {
     it('sends query params as get params', () => {
       emitter.once('request', (request) => {
         expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/query/');
-        expect(JSON.parse(request.body).filter).to.eql({
+        //ow nested JSON serializeation
+        expect(JSON.parse(JSON.parse(request.body).query).filter).to.eql({
           rating__gt: 5
         });
         expect(request.method).to.be('POST');

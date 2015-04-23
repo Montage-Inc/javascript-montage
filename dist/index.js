@@ -43,7 +43,7 @@ var Client = (function () {
     key: 'documents',
     value: function documents(schema, query) {
       var params = query ? query.toJS() : {};
-      return this.request('schemas/' + schema + '/query/', 'POST', params);
+      return this.request('schemas/' + schema + '/query/', 'POST', { query: JSON.stringify(params) });
     }
   }, {
     key: 'document',
