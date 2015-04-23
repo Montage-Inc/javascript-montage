@@ -57,6 +57,37 @@ var Client = (function () {
       return this.request('schemas/' + schema + '/', 'GET', params);
     }
   }, {
+    key: 'chunked_document_cursor',
+    value: regeneratorRuntime.mark(function chunked_document_cursor(schema, cursor) {
+      return regeneratorRuntime.wrap(function chunked_document_cursor$(context$2$0) {
+        while (1) switch (context$2$0.prev = context$2$0.next) {
+          case 0:
+            if (!cursor) {
+              context$2$0.next = 5;
+              break;
+            }
+
+            context$2$0.next = 3;
+            return this.raw_document_cursor(schema, cursor).then(function (payload) {
+              if (payload && payload.next) {
+                cursor = payload.next;
+              } else {
+                cursor = null;
+              }
+              return payload;
+            });
+
+          case 3:
+            context$2$0.next = 0;
+            break;
+
+          case 5:
+          case 'end':
+            return context$2$0.stop();
+        }
+      }, chunked_document_cursor, this);
+    })
+  }, {
     key: 'create_document',
     value: function create_document(schema, document) {
       return this.create_documents(schema, [document]);

@@ -24,6 +24,18 @@ export class Client {
     var params = {cursor};
     return this.request(`schemas/${schema}/`, "GET", params);
   }
+  *chunked_document_cursor(schema, cursor) {
+    while (cursor) {
+      yield this.raw_document_cursor(schema, cursor).then(payload => {
+        if (payload && payload.next) {
+          cursor = payload.next;
+        } else {
+          cursor = null;
+        }
+        return payload;
+      });
+    }
+  }
   create_document(schema, document) {
     return this.create_documents(schema, [document]);
   }
