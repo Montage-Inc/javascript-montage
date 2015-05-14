@@ -35,6 +35,7 @@ From a script tag::
   </script>
 
 Create a client object::
+
   import {Client, Query} from 'montagedata'
 
   //generate a token
