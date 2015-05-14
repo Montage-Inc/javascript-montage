@@ -1,6 +1,6 @@
 {
   "name": "montagedata",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "dist/index.js",
   "description": "Client library for Montage Data",
   "repository": {
@@ -11,9 +11,12 @@
     "lib": "./src"
   },
   "dependencies": {
-    "lodash": "~3.7.0",
-    "superagent": "0.21.0",
-    "q": "~1.2.0"
+    "babel": "^5.3.3",
+    "babel-core": "^5.3.3",
+    "babel-loader": "^5.0.0",
+    "lodash": "^3.7.0",
+    "q": "~1.2.0",
+    "superagent": "^0.21.0"
   },
   "devDependencies": {
     "gulp": "~3.8.11",
