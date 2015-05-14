@@ -20,13 +20,22 @@ Compile to ES5::
 
   gulp build
 
+Compile for the browser::
+  
+  webpack
+
 
 Usage
 =====
+From a script tag::
+
+  <script src="dist/montage.js"></script>
+  <script type="text/javascript">
+  console.log(Montage)
+  </script>
 
 Create a client object::
-
-  var Montage = require('montage');
+  import {Client, Query} from 'montagedata'
 
   //generate a token
   var client = new Montage.Client({
@@ -48,6 +57,7 @@ Create a client object::
   });
 
 
+Or include it in a script tage
 Using a client::
 
   var query = new Montage.Query()

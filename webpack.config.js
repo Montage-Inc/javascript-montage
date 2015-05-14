@@ -1,6 +1,8 @@
+var webpack = require("webpack");
+
 module.exports = {
   context: __dirname,
-  entry: './src/montage.js',
+  entry: './src/index.js',
   output: {
     libraryTarget: "var",
     library: "Montage",
@@ -14,5 +16,8 @@ module.exports = {
   },
   resolve: {
     extensions: ['', '.js', '.jsx']
-  }
+  },
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({minimize: true})
+  ]
 }
