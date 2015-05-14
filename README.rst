@@ -39,7 +39,7 @@ Create a client object::
   import {Client, Query} from 'montagedata'
 
   //generate a token
-  var client = new Montage.Client({
+  var client = new Client({
     username: "YOUR_USERNAME",
     passwod: "YOUR_PASSWORD",
     api_version: 1, //default
@@ -52,7 +52,7 @@ Create a client object::
 
 
   //client with only a token (recommended)
-  var client = new Montage.Client({
+  var client = new Client({
     token: "YOUR_TOKEN",
     domain: "test" //Your Montage subdomain
   });
@@ -61,7 +61,7 @@ Create a client object::
 Or include it in a script tage
 Using a client::
 
-  var query = new Montage.Query()
+  var query = new Query()
     .where({"rating__gt": 4})
     .limit(10)
     .order("rating", -1);
