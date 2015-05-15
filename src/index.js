@@ -62,8 +62,7 @@ export class Client {
       method = method && method.toUpperCase() || "GET";
       var headers = {
         accept: 'application/json',
-        'Content-Type': 'application/json',
-        'User-Agent': 'Montage Javascript v1',
+        'Content-Type': 'application/json'
       }
       if (this.params.token) {
         headers.Authorization = `Token ${this.params.token}`;

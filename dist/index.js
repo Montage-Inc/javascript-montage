@@ -126,8 +126,8 @@ var Client = (function () {
         method = method && method.toUpperCase() || 'GET';
         var headers = {
           accept: 'application/json',
-          'Content-Type': 'application/json',
-          'User-Agent': 'Montage Javascript v1' };
+          'Content-Type': 'application/json'
+        };
         if (_this.params.token) {
           headers.Authorization = 'Token ' + _this.params.token;
         }
