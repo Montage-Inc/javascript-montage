@@ -1,6 +1,6 @@
 {
   "name": "montagedata",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "dist/index.js",
   "description": "Client library for Montage Data",
   "repository": {
@@ -24,8 +24,7 @@
     "tapable": "^0.1.9",
     "uglify-js": "^2.4.21",
     "watchpack": "^0.2.8",
-    "webpack-core": "^0.6.5",
-    "whatwg-fetch": "^0.8.1"
+    "webpack-core": "^0.6.5"
   },
   "devDependencies": {
     "gulp": "~3.8.11",
