@@ -43,7 +43,7 @@ Create a client object::
     username: "YOUR_USERNAME",
     passwod: "YOUR_PASSWORD",
     api_version: 1, //default
-    domain: "test" //Your Montage subdomain
+    domain: "test" //Your Montage subdomain or full url to montage (for testing)
   });
 
   client.auth().then(response => {
@@ -58,7 +58,6 @@ Create a client object::
   });
 
 
-Or include it in a script tage
 Using a client::
 
   var query = new Query()

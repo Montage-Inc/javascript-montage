@@ -28,7 +28,7 @@ var Client = (function () {
 
     params.api_version = params.api_version || 1;
     this.params = params;
-    this.url_prefix = 'http://' + params.domain + '.dev.montagehot.club/api/v' + params.api_version + '/';
+    if (params.domain.match(/http/)) this.url_prefix = '' + params.domain + '/api/v' + params.api_version + '/';else this.url_prefix = 'http://' + params.domain + '.dev.montagehot.club/api/v' + params.api_version + '/';
   }
 
   _createClass(Client, [{
