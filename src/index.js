@@ -17,7 +17,7 @@ export class Client {
   }
   documents(schema, query) {
     var params = query ? query.toJS() : {};
-    return this.request(`schemas/${schema}/query/`, "POST", JSON.stringify(params));
+    return this.request(`schemas/${schema}/query/`, "POST", params);
   }
   document(schema, document_uuid) {
     return this.request(`schemas/${schema}/${document_uuid}/`);
