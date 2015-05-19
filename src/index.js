@@ -62,8 +62,9 @@ export class Client {
       method = method && method.toUpperCase() || "GET";
       var headers = {
         accept: 'application/json',
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+      };
       if (this.params.token) {
         headers.Authorization = `Token ${this.params.token}`;
       }
@@ -123,7 +124,7 @@ export class Query {
   order(order_by, ordering) {
     if(typeof ordering == "string") var parsedOrder = ordering
     else var parsedOrder = ordering < 0 ? "desc" : "asc"
-  
+
     return this._merge({
       order_by: order_by,
       ordering: parsedOrder,
