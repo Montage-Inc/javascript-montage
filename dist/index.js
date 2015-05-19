@@ -207,9 +207,11 @@ var Query = (function () {
   }, {
     key: 'order',
     value: function order(order_by, direction) {
+      if (typeof direction == 'string') var parsedDirection = direction;else var parsedDirection = direction < 0 ? 'desc' : 'asc';
+
       return this._merge({
         order_by: order_by,
-        direction: direction < 0 ? 'desc' : 'asc' });
+        direction: parsedDirection });
     }
   }, {
     key: 'filter',
