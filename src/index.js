@@ -122,8 +122,12 @@ export class Query {
     return this._merge({offset: num});
   }
   order(order_by, ordering) {
-    if(typeof ordering == "string") var parsedOrder = ordering
-    else var parsedOrder = ordering < 0 ? "desc" : "asc"
+    var parsedOrder;
+    if(_.isString(ordering)) {
+      parsedOrder = ordering;
+    } else {
+      parsedOrder = ordering < 0 ? "desc" : "asc";
+    }
 
     return this._merge({
       order_by: order_by,

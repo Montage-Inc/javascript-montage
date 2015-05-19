@@ -27,13 +27,22 @@ describe('Query', () => {
       expect(params.order_by).to.be('rating');
     });
 
-    it('sets order_by and dirction', () => {
+    it('sets order_by and direction', () => {
       var query = new Query();
       var params = query.order('rating', -1).toJS();
-      expect(params.direction).to.be('desc');
+      expect(params.ordering).to.be('desc');
 
       params = query.order('rating', 1).toJS();
-      expect(params.direction).to.be('asc');
+      expect(params.ordering).to.be('asc');
+    });
+
+    it('sets order_by and direction by string', () => {
+      var query = new Query();
+      var params = query.order('rating', 'desc').toJS();
+      expect(params.ordering).to.be('desc');
+
+      params = query.order('rating', 'asc').toJS();
+      expect(params.ordering).to.be('asc');
     });
   });
 
