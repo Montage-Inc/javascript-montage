@@ -1,6 +1,6 @@
 import Superagent from 'superagent';
 import _ from 'lodash';
-import 'babel/polyfill';
+
 
 export class Client {
   constructor(params = {}) {

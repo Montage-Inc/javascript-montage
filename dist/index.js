@@ -1,14 +1,20 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+var _createClass = require('babel-runtime/helpers/create-class')['default'];
+
+var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
+
+var _Object$defineProperty = require('babel-runtime/core-js/object/define-property')['default'];
+
+var _regeneratorRuntime = require('babel-runtime/regenerator')['default'];
+
+var _Promise = require('babel-runtime/core-js/promise')['default'];
+
+var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
+
+_Object$defineProperty(exports, '__esModule', {
   value: true
 });
-
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 var _superagent = require('superagent');
 
@@ -18,8 +24,6 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-require('babel/polyfill');
-
 var Client = (function () {
   function Client() {
     var params = arguments[0] === undefined ? {} : arguments[0];
@@ -28,7 +32,11 @@ var Client = (function () {
 
     params.api_version = params.api_version || 1;
     this.params = params;
-    if (params.domain.match(/http/)) this.url_prefix = '' + params.domain + '/api/v' + params.api_version + '/';else this.url_prefix = 'http://' + params.domain + '.dev.montagehot.club/api/v' + params.api_version + '/';
+    if (this.params.url) {
+      this.url_prefix = this.params.url;
+    } else {
+      this.url_prefix = 'http://' + params.domain + '.dev.montagehot.club/api/v' + params.api_version + '/';
+    }
   }
 
   _createClass(Client, [{
@@ -60,8 +68,8 @@ var Client = (function () {
     }
   }, {
     key: 'chunked_document_cursor',
-    value: regeneratorRuntime.mark(function chunked_document_cursor(schema, cursor) {
-      return regeneratorRuntime.wrap(function chunked_document_cursor$(context$2$0) {
+    value: _regeneratorRuntime.mark(function chunked_document_cursor(schema, cursor) {
+      return _regeneratorRuntime.wrap(function chunked_document_cursor$(context$2$0) {
         while (1) switch (context$2$0.prev = context$2$0.next) {
           case 0:
             if (!cursor) {
@@ -121,13 +129,13 @@ var Client = (function () {
     value: function request(url, method, data) {
       var _this = this;
 
-      return new Promise(function (resolve, reject) {
+      return new _Promise(function (resolve, reject) {
         url = _this.url_prefix + url;
         method = method && method.toUpperCase() || 'GET';
         var headers = {
           accept: 'application/json',
-          'Content-Type': 'application/json'
-        };
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest' };
         if (_this.params.token) {
           headers.Authorization = 'Token ' + _this.params.token;
         }
@@ -207,7 +215,12 @@ var Query = (function () {
   }, {
     key: 'order',
     value: function order(order_by, ordering) {
-      if (typeof ordering == 'string') var parsedOrder = ordering;else var parsedOrder = ordering < 0 ? 'desc' : 'asc';
+      var parsedOrder;
+      if (_lodash2['default'].isString(ordering)) {
+        parsedOrder = ordering;
+      } else {
+        parsedOrder = ordering < 0 ? 'desc' : 'asc';
+      }
 
       return this._merge({
         order_by: order_by,
