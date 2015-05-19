@@ -94,7 +94,7 @@ describe('Client', () => {
       emitter.once('request', (request) => {
         expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/query/');
         //ow nested JSON serializeation
-        expect(JSON.parse(JSON.parse(request.body).query).filter).to.eql({
+        expect(JSON.parse(request.body).filter).to.eql({
           rating__gt: 5
         });
         expect(request.method).to.be('POST');
