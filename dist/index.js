@@ -183,7 +183,7 @@ var Query = (function () {
       limit: null,
       offset: null,
       order_by: null,
-      direction: null,
+      ordering: null,
       filter: {} };
     this._state = state;
   }
@@ -206,12 +206,12 @@ var Query = (function () {
     }
   }, {
     key: 'order',
-    value: function order(order_by, direction) {
-      if (typeof direction == 'string') var parsedDirection = direction;else var parsedDirection = direction < 0 ? 'desc' : 'asc';
+    value: function order(order_by, ordering) {
+      if (typeof ordering == 'string') var parsedOrder = ordering;else var parsedOrder = ordering < 0 ? 'desc' : 'asc';
 
       return this._merge({
         order_by: order_by,
-        direction: parsedDirection });
+        ordering: parsedOrder });
     }
   }, {
     key: 'filter',

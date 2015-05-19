@@ -105,7 +105,7 @@ export class Query {
       limit: null,
       offset: null,
       order_by: null,
-      direction: null,
+      ordering: null,
       filter: {},
     };
     this._state = state;
@@ -120,13 +120,13 @@ export class Query {
   offset(num) {
     return this._merge({offset: num});
   }
-  order(order_by, direction) {
-    if(typeof direction == "string") var parsedDirection = direction
-    else var parsedDirection = direction < 0 ? "desc" : "asc"
+  order(order_by, ordering) {
+    if(typeof ordering == "string") var parsedOrder = ordering
+    else var parsedOrder = ordering < 0 ? "desc" : "asc"
   
     return this._merge({
       order_by: order_by,
-      direction: parsedDirection,
+      ordering: parsedOrder,
     });
   }
   filter(params) {
