@@ -8,17 +8,19 @@ var _Object$defineProperty = require('babel-runtime/core-js/object/define-proper
 
 var _regeneratorRuntime = require('babel-runtime/regenerator')['default'];
 
-var _Promise = require('babel-runtime/core-js/promise')['default'];
-
 var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
 
 _Object$defineProperty(exports, '__esModule', {
   value: true
 });
 
-var _superagent = require('superagent');
+var _isomorphicFetch = require('isomorphic-fetch');
 
-var _superagent2 = _interopRequireDefault(_superagent);
+var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
+
+var _querystring = require('querystring');
+
+var _querystring2 = _interopRequireDefault(_querystring);
 
 var _lodash = require('lodash');
 
@@ -127,42 +129,26 @@ var Client = (function () {
   }, {
     key: 'request',
     value: function request(url, method, data) {
-      var _this = this;
-
-      return new _Promise(function (resolve, reject) {
-        url = _this.url_prefix + url;
-        method = method && method.toUpperCase() || 'GET';
-        var headers = {
+      var options = {
+        method: method && method.toUpperCase() || 'GET',
+        headers: {
           accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest' };
-        if (_this.params.token) {
-          headers.Authorization = 'Token ' + _this.params.token;
+          'X-Requested-With': 'XMLHttpRequest' }
+      };
+      if (data) {
+        if (options.method === 'GET') {
+          url += '?' + _querystring2['default'].stringify(data);
+        } else {
+          options.body = JSON.stringify(data);
         }
-        var req = _this._agent(method, url).set(headers);
-
-        //send our cookies if we have them
-        if (req.withCredentials) {
-          req = req.withCredentials();
-        }
-
-        if (data) {
-          if (method === 'GET' || method === 'HEAD' || method === 'OPTIONS') {
-            req.query(data);
-          } else {
-            req.send(JSON.stringify(data));
-          }
-        }
-
-        req.end(function (error, res) {
-          if (error) {
-            reject(error);
-          } else if (res.ok) {
-            resolve(res.body);
-          } else {
-            reject(res.error);
-          }
-        });
+      }
+      if (this.params.token) {
+        options.headers.Authorization = 'Token ' + this.params.token;
+      }
+      return this._agent(url, options).then(function (response) {
+        //TODO raise client response errors here
+        return response.json();
       });
     }
   }, {
@@ -172,7 +158,7 @@ var Client = (function () {
         args[_key] = arguments[_key];
       }
 
-      return _superagent2['default'].apply(undefined, args);
+      return _isomorphicFetch2['default'].apply(undefined, args);
     }
     //TODO files api
 

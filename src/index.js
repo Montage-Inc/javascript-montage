@@ -1,4 +1,5 @@
-import Superagent from 'superagent';
+import fetch from 'isomorphic-fetch';
+import querystring from 'querystring';
 import _ from 'lodash';
 
 
@@ -60,45 +61,31 @@ export class Client {
     });
   }
   request(url, method, data) {
-    return new Promise((resolve, reject) => {
-      url = this.url_prefix + url;
-      method = method && method.toUpperCase() || "GET";
-      var headers = {
+    var options = {
+      method: method && method.toUpperCase() || "GET",
+      headers: {
         accept: 'application/json',
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
-      };
-      if (this.params.token) {
-        headers.Authorization = `Token ${this.params.token}`;
       }
-      var req = this._agent(method, url).set(headers);
-
-      //send our cookies if we have them
-      if (req.withCredentials) {
-        req = req.withCredentials();
+    }
+    if (data) {
+      if (options.method === "GET") {
+        url += '?' + querystring.stringify(data);
+      } else {
+        options.body = JSON.stringify(data);
       }
-
-      if (data) {
-        if (method === "GET" || method === "HEAD" || method === "OPTIONS") {
-          req.query(data);
-        } else {
-          req.send(JSON.stringify(data));
-        }
-      }
-
-      req.end(function(error, res) {
-        if (error) {
-          reject(error);
-        } else if (res.ok) {
-          resolve(res.body);
-        } else {
-          reject(res.error);
-        }
-      });
+    }
+    if (this.params.token) {
+      options.headers.Authorization = `Token ${this.params.token}`;
+    }
+    return this._agent(url, options).then(function(response) {
+      //TODO raise client response errors here
+      return response.json();
     });
   }
   _agent(...args) {
-    return Superagent(...args);
+    return fetch(...args);
   }
   //TODO files api
 }

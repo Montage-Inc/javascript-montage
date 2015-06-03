@@ -13,7 +13,8 @@ module.exports = {
       test: /\.js$/,
       loader: 'babel-loader?stage=0&optional=runtime',
       exclude: /(bower_components|node_modules)/
-    }]
+    },
+    ]
   },
   resolve: {
     extensions: ['', '.js', '.jsx']

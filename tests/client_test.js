@@ -1,4 +1,5 @@
 import expect from 'expect.js';
+import querystring from 'querystring';
 import {Client, Query} from '../src/index';
 import _ from 'lodash';
 import {EventEmitter} from 'events';
@@ -6,33 +7,42 @@ import {EventEmitter} from 'events';
 var emitter = new EventEmitter();
 
 
-class MockedAgent {
-  constructor(method, url) {
-    this.method = method;
-    this.url = url;
+function mockedRequest(url, options) {
+  var self = {};
+  self.method = options.method;
+  self.headers = options.headers;
+  self.body = options.body;
+  self.url = url;
+  self.getParams = null;
+  if (_.indexOf(url, '?') !== -1) {
+    self.getParams = querystring.parse(url.split('?')[1]);
+    self.url = url.split('?')[0];
   }
-  set(headers) {
-    this.headers = headers;
-    return this;
-  }
-  send(data) {
-    this.body = data;
-    return this;
-  }
-  query(data) {
-    this.getParams = data;
-    return this;
-  }
-  end(callback) {
-    this.callback = callback;
-    emitter.emit('request', this);
-    return this;
-  }
+  self.callback = null;
+
+  var promise = new Promise(function(resolve, reject) {
+    self.callback = function(err, success) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve({
+          ok: success.ok,
+          statusCode: 200,
+          json: function() {
+            return success.body
+          }
+        });
+      }
+    }
+  });
+
+  emitter.emit('request', self);
+  return promise;
 }
 
 class MockedClient extends Client {
   _agent(...args) {
-    return new MockedAgent(...args);
+    return mockedRequest(...args);
   }
 }
 
