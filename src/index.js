@@ -19,6 +19,9 @@ export class Client {
   schema(name) {
     return this.request(`schemas/${name}/`);
   }
+  files(formData) {
+    return this.request(`files/`,'POST',formData);
+  }
   documents(schema, query) {
     var params = query ? query.toJS() : {};
     return this.request(`schemas/${schema}/query/`, "POST", params);
@@ -60,7 +63,7 @@ export class Client {
       password: this.params.password,
     });
   }
-  request(url, method, data) {
+  request(url, method, data, contentType) {
     var options = {
       method: method && method.toUpperCase() || "GET",
       headers: {
