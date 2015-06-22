@@ -82,7 +82,8 @@ export class Client {
     if (this.params.token) {
       options.headers.Authorization = `Token ${this.params.token}`;
     }
-    return this._agent(url, options).then(function(response) {
+    var reqUrl = `${this.url_prefix}${url}`
+    return this._agent(reqUrl, options).then(function(response) {
       //TODO raise client response errors here
       return response.json();
     });
