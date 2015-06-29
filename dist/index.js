@@ -155,6 +155,8 @@ var Client = (function () {
       return this._agent(reqUrl, options).then(function (response) {
         //TODO raise client response errors here
         return response.json();
+      }).then(function (json) {
+        return json.data;
       });
     }
   }, {
