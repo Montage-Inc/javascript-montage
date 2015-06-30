@@ -60,6 +60,7 @@ Create a client object::
 ###File Uploads
 
 Pass a FormData object like so
+
 ~~~js
 client.files(formData).then(function(response){
   console.log(response)
