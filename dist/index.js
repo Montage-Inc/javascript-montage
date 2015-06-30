@@ -54,7 +54,7 @@ var Client = (function () {
   }, {
     key: 'files',
     value: function files(formData) {
-      return this.request('files/', 'POST', formData);
+      return this.request('files/', 'POST', formData, 'multipart/form-data');
     }
   }, {
     key: 'documents',
@@ -138,7 +138,7 @@ var Client = (function () {
         method: method && method.toUpperCase() || 'GET',
         headers: {
           accept: 'application/json',
-          'Content-Type': 'application/json',
+          'Content-Type': contentType || 'application/json',
           'X-Requested-With': 'XMLHttpRequest' }
       };
       if (data) {

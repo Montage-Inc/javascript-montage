@@ -20,7 +20,7 @@ export class Client {
     return this.request(`schemas/${name}/`);
   }
   files(formData) {
-    return this.request(`files/`,'POST',formData);
+    return this.request(`files/`,'POST',formData,'multipart/form-data');
   }
   documents(schema, query) {
     var params = query ? query.toJS() : {};
@@ -68,7 +68,7 @@ export class Client {
       method: method && method.toUpperCase() || "GET",
       headers: {
         accept: 'application/json',
-        'Content-Type': 'application/json',
+        'Content-Type': contentType || 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
       }
     }
