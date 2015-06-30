@@ -57,17 +57,16 @@ Create a client object::
     domain: "test" //Your Montage subdomain
   });
 
-###File Uploads
 
-Pass a FormData object like so
+File Uploads
+=======
 
-~~~js
+Pass a FormData object like so::
 
-client.files(formData).then(function(response){
-  console.log(response)
-})
+  client.files(formData).then(function(response){
+    console.log(response)
+  })
 
-~~~
 
 Using a client::
 
