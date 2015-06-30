@@ -4,11 +4,13 @@ var _createClass = require('babel-runtime/helpers/create-class')['default'];
 
 var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
 
+var _Object$defineProperty = require('babel-runtime/core-js/object/define-property')['default'];
+
 var _regeneratorRuntime = require('babel-runtime/regenerator')['default'];
 
 var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
 
-Object.defineProperty(exports, '__esModule', {
+_Object$defineProperty(exports, '__esModule', {
   value: true
 });
 
@@ -127,8 +129,7 @@ var Client = (function () {
     value: function auth() {
       return this.request('auth/', 'POST', {
         username: this.params.username,
-        password: this.params.password
-      });
+        password: this.params.password });
     }
   }, {
     key: 'request',
@@ -138,8 +139,7 @@ var Client = (function () {
         headers: {
           accept: 'application/json',
           'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
-        }
+          'X-Requested-With': 'XMLHttpRequest' }
       };
       if (data) {
         if (options.method === 'GET') {
@@ -151,18 +151,20 @@ var Client = (function () {
       if (this.params.token) {
         options.headers.Authorization = 'Token ' + this.params.token;
       }
-      var reqUrl = '' + this.url_prefix + url;
+      var reqUrl = '' + this.url_prefix + '' + url;
       return this._agent(reqUrl, options).then(function (response) {
         //TODO raise client response errors here
         return response.json();
-      }).then(function (json) {
-        return json.data;
       });
     }
   }, {
     key: '_agent',
     value: function _agent() {
-      return _isomorphicFetch2['default'].apply(undefined, arguments);
+      for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      return _isomorphicFetch2['default'].apply(undefined, args);
     }
     //TODO files api
 
@@ -182,8 +184,7 @@ var Query = (function () {
       offset: null,
       order_by: null,
       ordering: null,
-      filter: {}
-    };
+      filter: {} };
     this._state = state;
   }
 
@@ -215,8 +216,7 @@ var Query = (function () {
 
       return this._merge({
         order_by: order_by,
-        ordering: parsedOrder
-      });
+        ordering: parsedOrder });
     }
   }, {
     key: 'filter',

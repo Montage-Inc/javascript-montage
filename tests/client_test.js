@@ -62,6 +62,7 @@ describe('Client', () => {
           ok: true,
           body: 'schemas FTW',
         });
+
       });
       return client.schemas().then((response) => {
         expect(response).to.be('schemas FTW')
