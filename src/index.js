@@ -20,7 +20,7 @@ export class Client {
     return this.request(`schemas/${name}/`);
   }
   files(formData) {
-    return this.request(`files/`,'POST',formData,'multipart/form-data');
+    return this.request(`files/`,'POST',formData,true);
   }
   documents(schema, query) {
     var params = query ? query.toJS() : {};
@@ -63,13 +63,24 @@ export class Client {
       password: this.params.password,
     });
   }
-  request(url, method, data, contentType) {
-    var options = {
-      method: method && method.toUpperCase() || "GET",
-      headers: {
-        accept: 'application/json',
-        'Content-Type': contentType || 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
+  request(url, method, data, file) {
+    if(file){
+      var options = {
+        method: method && method.toUpperCase() || "GET",
+        headers: {
+          accept: 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        }
+      }
+    }
+    else{
+      var options = {
+        method: method && method.toUpperCase() || "GET",
+        headers: {
+          accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        }
       }
     }
     if (data) {
