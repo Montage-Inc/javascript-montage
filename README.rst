@@ -21,7 +21,7 @@ Compile to ES5::
   gulp build
 
 Compile for the browser::
-  
+
   webpack
 
 
@@ -57,6 +57,14 @@ Create a client object::
     domain: "test" //Your Montage subdomain
   });
 
+###File Uploads
+
+Pass a FormData object like so
+~~~js
+client.files(formData).then(function(response){
+  console.log(response)
+})
+~~~
 
 Using a client::
 
