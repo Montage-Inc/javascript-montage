@@ -87,7 +87,8 @@ export class Client {
       if (options.method === "GET") {
         url += '?' + querystring.stringify(data);
       } else {
-        options.body = JSON.stringify(data);
+        if(file) options.body = data
+        else options.body = JSON.stringify(data);
       }
     }
     if (this.params.token) {

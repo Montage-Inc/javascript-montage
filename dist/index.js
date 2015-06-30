@@ -155,7 +155,7 @@ var Client = (function () {
         if (options.method === 'GET') {
           url += '?' + _querystring2['default'].stringify(data);
         } else {
-          options.body = JSON.stringify(data);
+          if (file) options.body = data;else options.body = JSON.stringify(data);
         }
       }
       if (this.params.token) {
