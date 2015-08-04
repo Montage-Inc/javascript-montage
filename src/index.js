@@ -10,7 +10,7 @@ export class Client {
     if (this.params.url) {
       this.url_prefix = this.params.url;
     } else {
-      this.url_prefix = `http://${params.domain}.dev.montagehot.club/api/v${params.api_version}/`;
+      this.url_prefix = `https://${params.domain}.mntge.com/api/v${params.api_version}/`;
     }
   }
   schemas() {
