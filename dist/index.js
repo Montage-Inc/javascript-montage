@@ -14,6 +14,8 @@ _Object$defineProperty(exports, '__esModule', {
   value: true
 });
 
+exports.getByteLen = getByteLen;
+
 var _isomorphicFetch = require('isomorphic-fetch');
 
 var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
@@ -25,6 +27,25 @@ var _querystring2 = _interopRequireDefault(_querystring);
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
+
+/**
+ * Count bytes in a string's UTF-8 representation.
+ *
+ * @param   string
+ * @return  int
+ */
+
+function getByteLen(normal_val) {
+  // Force string type
+  normal_val = String(normal_val);
+
+  var byteLen = 0;
+  for (var i = 0; i < normal_val.length; i++) {
+    var c = normal_val.charCodeAt(i);
+    byteLen += c < 1 << 7 ? 1 : c < 1 << 11 ? 2 : c < 1 << 16 ? 3 : c < 1 << 21 ? 4 : c < 1 << 26 ? 5 : c < 1 << 31 ? 6 : Number.NaN;
+  }
+  return byteLen;
+}
 
 var Client = (function () {
   function Client() {
@@ -159,6 +180,10 @@ var Client = (function () {
       }
       if (this.params.token) {
         options.headers.Authorization = 'Token ' + this.params.token;
+      }
+      if (options.body) {
+        //Varnish and heroku require a content length!
+        options.headers['Content-Length'] = getByteLen(options.body);
       }
       var reqUrl = '' + this.url_prefix + '' + url;
       return this._agent(reqUrl, options).then(function (response) {
