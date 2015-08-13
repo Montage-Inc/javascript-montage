@@ -136,11 +136,15 @@ export class Client {
 export class Query {
   constructor(state) {
     state = state || {
+      pluck: null,
       limit: null,
       offset: null,
       order_by: null,
       ordering: null,
       filter: {},
+      without: [],
+      batch_size: 1000,
+      index: null,
     };
     this._state = state;
   }
@@ -166,6 +170,18 @@ export class Query {
       order_by: order_by,
       ordering: parsedOrder,
     });
+  }
+  pluck(fields) {
+    return this._merge({pluck: fields});
+  }
+  without(fields) {
+    return this._merge({without: fields});
+  }
+  pageSize(size) {
+    return this._merge({batch_size: size});
+  }
+  index(indexName) {
+    return this._merge({index: indexName});
   }
   filter(params) {
     return this._merge({filter: params});

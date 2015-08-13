@@ -214,11 +214,15 @@ var Query = (function () {
     _classCallCheck(this, Query);
 
     state = state || {
+      pluck: null,
       limit: null,
       offset: null,
       order_by: null,
       ordering: null,
-      filter: {} };
+      filter: {},
+      without: [],
+      batch_size: 1000,
+      index: null };
     this._state = state;
   }
 
@@ -251,6 +255,26 @@ var Query = (function () {
       return this._merge({
         order_by: order_by,
         ordering: parsedOrder });
+    }
+  }, {
+    key: 'pluck',
+    value: function pluck(fields) {
+      return this._merge({ pluck: fields });
+    }
+  }, {
+    key: 'without',
+    value: function without(fields) {
+      return this._merge({ without: fields });
+    }
+  }, {
+    key: 'pageSize',
+    value: function pageSize(size) {
+      return this._merge({ batch_size: size });
+    }
+  }, {
+    key: 'index',
+    value: function index(indexName) {
+      return this._merge({ index: indexName });
     }
   }, {
     key: 'filter',

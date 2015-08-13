@@ -64,4 +64,36 @@ describe('Query', () => {
       });
     });
   });
+
+  describe('pluck', () => {
+    it('sets pluck params', () => {
+      var query = new Query();
+      var params = query.pluck(['rating', 'id']).toJS();
+      expect(params.pluck).to.be.eql(['rating', 'id']);
+    });
+  });
+
+  describe('without', () => {
+    it('sets without params', () => {
+      var query = new Query();
+      var params = query.without(['blob']).toJS();
+      expect(params.without).to.be.eql(['blob']);
+    });
+  });
+
+  describe('pageSize', () => {
+    it('sets batch_size params', () => {
+      var query = new Query();
+      var params = query.pageSize(20).toJS();
+      expect(params.batch_size).to.be.eql(20);
+    });
+  });
+
+  describe('index', () => {
+    it('sets index params', () => {
+      var query = new Query();
+      var params = query.index('fullText').toJS();
+      expect(params.index).to.be.eql('fullText');
+    });
+  });
 });
