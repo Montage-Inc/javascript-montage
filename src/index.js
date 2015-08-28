@@ -119,15 +119,23 @@ export class Client {
     var reqUrl = `${this.url_prefix}${url}`
     return this._agent(reqUrl, options).then(function(response) {
       if (!response.ok) {
+        return Promise.reject(response);
+      }
+      if (response.statusCode >= 400) {
         var body = response.text();
-        console.error(body);
-        var errorMessage = response.statusText;
+        //console.error(body);
+        var errorMessage = body || response.statusText;
         try {
-          errorMessage = JSON.parse(errorMessage);
+          errorMessage = JSON.parse(body);
         } catch (e) {}
-        throw new Error(errorMessage);
+        return Promise.reject(errorMessage);
       }
       return response.json();
+    }).then(function(payload) {
+      if (payload && payload.errors) {
+        return Promise.reject(payload.errors);
+      }
+      return payload;
     });
   }
   _agent(...args) {

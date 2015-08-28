@@ -8,6 +8,8 @@ var _Object$defineProperty = require('babel-runtime/core-js/object/define-proper
 
 var _regeneratorRuntime = require('babel-runtime/regenerator')['default'];
 
+var _Promise = require('babel-runtime/core-js/promise')['default'];
+
 var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
 
 _Object$defineProperty(exports, '__esModule', {
@@ -184,15 +186,23 @@ var Client = (function () {
       var reqUrl = '' + this.url_prefix + '' + url;
       return this._agent(reqUrl, options).then(function (response) {
         if (!response.ok) {
+          return _Promise.reject(response);
+        }
+        if (response.statusCode >= 400) {
           var body = response.text();
-          console.error(body);
-          var errorMessage = response.statusText;
+          //console.error(body);
+          var errorMessage = body || response.statusText;
           try {
-            errorMessage = JSON.parse(errorMessage);
+            errorMessage = JSON.parse(body);
           } catch (e) {}
-          throw new Error(errorMessage);
+          return _Promise.reject(errorMessage);
         }
         return response.json();
+      }).then(function (payload) {
+        if (payload && payload.errors) {
+          return _Promise.reject(payload.errors);
+        }
+        return payload;
       });
     }
   }, {

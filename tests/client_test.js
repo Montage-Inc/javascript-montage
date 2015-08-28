@@ -28,9 +28,12 @@ function mockedRequest(url, options) {
       } else {
         resolve({
           ok: success.ok,
-          statusCode: 200,
+          statusCode: success.statusCode || 200,
           json: function() {
-            return success.body
+            return success.body;
+          },
+          text: function() {
+            return success.body;
           }
         });
       }
@@ -53,6 +56,58 @@ describe('Client', () => {
   beforeEach(() => {
     client = new MockedClient();
   })
+
+  describe('request', () => {
+    it('rejects validation errors and attempts to return JSON', () => {
+      emitter.once('request', (request) => {
+        request.callback(null, {
+          ok: true,
+          statusCode: 403,
+          body: JSON.stringify({errors: ['something went wrong']}),
+        });
+
+      });
+      return client.request('#').then(response => {
+        expect.fail();
+      }, error => {
+        //console.log(error);
+        expect(error).to.be.eql({errors: ['something went wrong']});
+      });
+    });
+
+    it('rejects validation errors from status 200 and attempts to return JSON', () => {
+      emitter.once('request', (request) => {
+        request.callback(null, {
+          ok: true,
+          statusCode: 200,
+          body: {errors: ['something went wrong']},
+        });
+
+      });
+      return client.request('#').then(response => {
+        expect.fail();
+      }, error => {
+        //console.log(error);
+        expect(error).to.be.eql(['something went wrong']);
+      });
+    });
+
+    it('rejects bad responses with body text', () => {
+      emitter.once('request', (request) => {
+        request.callback(null, {
+          ok: false,
+          body: 'something went wrong',
+        });
+
+      });
+      return client.request('#').then(response => {
+        expect.fail();
+      }, error => {
+        //console.log(error);
+        expect(error.text()).to.be.eql('something went wrong');
+      });
+    });
+  });
 
   describe('schemas', () => {
     it('returns promise from schemas endpoint', () => {
