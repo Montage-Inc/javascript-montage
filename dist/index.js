@@ -95,35 +95,38 @@ var Client = (function () {
       return this.request('schemas/' + schema + '/', 'GET', params);
     }
   }, {
-    key: 'chunked_document_cursor',
-    value: _regeneratorRuntime.mark(function chunked_document_cursor(schema, cursor) {
-      return _regeneratorRuntime.wrap(function chunked_document_cursor$(context$2$0) {
+    key: 'paginated_documents',
+    value: _regeneratorRuntime.mark(function paginated_documents(schema, query) {
+      var cursor, onResponse;
+      return _regeneratorRuntime.wrap(function paginated_documents$(context$2$0) {
         while (1) switch (context$2$0.prev = context$2$0.next) {
           case 0:
+            onResponse = function onResponse(response) {
+              cursor = response.cursors ? response.cursors.next : null;
+              return response.data;
+            };
+
+            context$2$0.next = 3;
+            return this.documents(schema, query).then(onResponse);
+
+          case 3:
             if (!cursor) {
-              context$2$0.next = 5;
+              context$2$0.next = 8;
               break;
             }
 
-            context$2$0.next = 3;
-            return this.raw_document_cursor(schema, cursor).then(function (payload) {
-              try {
-                cursor = payload.cursors.next;
-              } catch (e) {
-                cursor = null;
-              }
-              return payload;
-            });
+            context$2$0.next = 6;
+            return this.document_cursor(schema, cursor).then(onResponse);
 
-          case 3:
-            context$2$0.next = 0;
+          case 6:
+            context$2$0.next = 3;
             break;
 
-          case 5:
+          case 8:
           case 'end':
             return context$2$0.stop();
         }
-      }, chunked_document_cursor, this);
+      }, paginated_documents, this);
     })
   }, {
     key: 'create_document',
@@ -155,21 +158,14 @@ var Client = (function () {
   }, {
     key: 'request',
     value: function request(url, method, data, file) {
-      if (file) {
-        var options = {
-          method: method && method.toUpperCase() || 'GET',
-          headers: {
-            accept: 'application/json',
-            'X-Requested-With': 'XMLHttpRequest' }
-        };
-      } else {
-        var options = {
-          method: method && method.toUpperCase() || 'GET',
-          headers: {
-            accept: 'application/json',
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest' }
-        };
+      var options = {
+        method: method && method.toUpperCase() || 'GET',
+        headers: {
+          accept: 'application/json',
+          'X-Requested-With': 'XMLHttpRequest' }
+      };
+      if (!file) {
+        options.headers['Content-Type'] = 'application/json';
       }
       if (data) {
         if (options.method === 'GET') {
@@ -187,7 +183,15 @@ var Client = (function () {
       }
       var reqUrl = '' + this.url_prefix + '' + url;
       return this._agent(reqUrl, options).then(function (response) {
-        //TODO raise client response errors here
+        if (!response.ok) {
+          var body = response.text();
+          console.error(body);
+          var errorMessage = response.statusText;
+          try {
+            errorMessage = JSON.parse(errorMessage);
+          } catch (e) {}
+          throw new Error(errorMessage);
+        }
         return response.json();
       });
     }
@@ -298,3 +302,5 @@ var Query = (function () {
 })();
 
 exports.Query = Query;
+
+//yields promises

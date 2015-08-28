@@ -2,6 +2,7 @@ import expect from 'expect.js';
 import querystring from 'querystring';
 import {Client, Query} from '../src/index';
 import _ from 'lodash';
+import FormData from 'form-data';
 import {EventEmitter} from 'events';
 
 var emitter = new EventEmitter();
@@ -222,6 +223,73 @@ describe('Client', () => {
       client.params.password = 'secret';
       return client.auth().then((response) => {
         expect(response).to.be.eql({token: 'FOO'})
+      });
+    });
+  });
+
+  describe('files', () => {
+    it('returns promise from create file endpoint with post data', () => {
+      emitter.once('request', (request) => {
+        expect(_.last(request.url.split('/v1/'))).to.be('files/');
+        expect(request.method).to.be('POST');
+        //expect(request.body).to.be.eql(JSON.stringify([{title: 'Star Wars'}]));
+        request.callback(null, {
+          ok: true,
+          body: {id: 'aww yeah'},
+        });
+      });
+      var formData = new FormData();
+      formData.append('my_buffer', new Buffer(10));
+      return client.files(formData).then((response) => {
+        expect(response).to.be.eql({id: 'aww yeah'})
+      });
+    });
+  });
+
+  describe('paginated documents', () => {
+    it('returns a generator that yields response promises', () => {
+      function firstPage(request) {
+        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/query/');
+        expect(request.method).to.be('POST');
+        request.callback(null, {
+          ok: true,
+          body: {
+            data: ['aww yeah'],
+            cursors: {
+              next: 'DEADBEAF',
+            }
+          },
+        });
+      }
+
+      function lastPage(request) {
+        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/');
+        expect(request.method).to.be('GET');
+        expect(request.getParams['cursor']).to.be('DEADBEAF');
+        request.callback(null, {
+          ok: true,
+          body: {
+            data: ['last one alive lock the door'],
+          },
+        });
+      }
+
+      emitter.once('request', firstPage);
+      var generator = client.paginated_documents('movies');
+      var g1 = generator.next()
+      expect(g1.done).to.be(false);
+      var response = g1.value;
+      return response.then(objects => {
+        emitter.once('request', lastPage);
+        expect(objects).to.be.eql(['aww yeah']);
+        var g2 = generator.next();
+        expect(g2.done).to.be(false);
+        expect(g2.value).to.be.ok();
+        return g2.value.then(objects => {
+          expect(objects).to.be.eql(['last one alive lock the door']);
+          var g3 = generator.next();
+          expect(g3.done).to.be(true);
+        });
       });
     });
   });

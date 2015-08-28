@@ -43,7 +43,7 @@ export class Client {
     return this.request(`schemas/${name}/`);
   }
   files(formData) {
-    return this.request(`files/`,'POST',formData,true);
+    return this.request(`files/`,'POST', formData, true);
   }
   documents(schema, query) {
     var params = query ? query.toJS() : {};
@@ -56,16 +56,20 @@ export class Client {
     var params = {cursor};
     return this.request(`schemas/${schema}/`, "GET", params);
   }
-  *chunked_document_cursor(schema, cursor) {
+  *paginated_documents(schema, query) {
+    //yields promises
+
+    var cursor;
+
+    function onResponse(response) {
+      cursor = response.cursors ? response.cursors.next : null;
+      return response.data;
+    }
+
+    yield this.documents(schema, query).then(onResponse);
+
     while (cursor) {
-      yield this.raw_document_cursor(schema, cursor).then(payload => {
-        try {
-          cursor = payload.cursors.next;
-        } catch (e) {
-          cursor = null;
-        }
-        return payload;
-      });
+      yield this.document_cursor(schema, cursor).then(onResponse);
     }
   }
   create_document(schema, document) {
@@ -87,24 +91,15 @@ export class Client {
     });
   }
   request(url, method, data, file) {
-    if(file){
-      var options = {
-        method: method && method.toUpperCase() || "GET",
-        headers: {
-          accept: 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-        }
+    var options = {
+      method: method && method.toUpperCase() || "GET",
+      headers: {
+        accept: 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
       }
     }
-    else{
-      var options = {
-        method: method && method.toUpperCase() || "GET",
-        headers: {
-          accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest',
-        }
-      }
+    if (!file) {
+      options.headers['Content-Type'] = 'application/json';
     }
     if (data) {
       if (options.method === "GET") {
@@ -123,7 +118,15 @@ export class Client {
     }
     var reqUrl = `${this.url_prefix}${url}`
     return this._agent(reqUrl, options).then(function(response) {
-      //TODO raise client response errors here
+      if (!response.ok) {
+        var body = response.text();
+        console.error(body);
+        var errorMessage = response.statusText;
+        try {
+          errorMessage = JSON.parse(errorMessage);
+        } catch (e) {}
+        throw new Error(errorMessage);
+      }
       return response.json();
     });
   }
