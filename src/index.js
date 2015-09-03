@@ -119,6 +119,9 @@ export class Client {
     var reqUrl = `${this.url_prefix}${url}`
     return this._agent(reqUrl, options).then(function(response) {
       if (!response.ok) {
+        response.request = _.merge({
+          url: reqUrl,
+        }, options);
         return Promise.reject(response);
       }
       if (response.statusCode >= 400) {

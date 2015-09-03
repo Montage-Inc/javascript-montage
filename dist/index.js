@@ -186,6 +186,8 @@ var Client = (function () {
       var reqUrl = '' + this.url_prefix + '' + url;
       return this._agent(reqUrl, options).then(function (response) {
         if (!response.ok) {
+          response.request = _lodash2['default'].merge({
+            url: reqUrl }, options);
           return _Promise.reject(response);
         }
         if (response.statusCode >= 400) {
