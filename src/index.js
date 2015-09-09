@@ -124,14 +124,14 @@ export class Client {
         }, options);
         return Promise.reject(response);
       }
-      if (response.statusCode >= 400) {
-        var body = response.text();
-        //console.error(body);
-        var errorMessage = body || response.statusText;
-        try {
-          errorMessage = JSON.parse(body);
-        } catch (e) {}
-        return Promise.reject(errorMessage);
+      if (response.status >= 400) {
+        return response.text().then(body => {
+          var errorMessage = body || response.statusText;
+          try {
+            errorMessage = JSON.parse(body);
+          } catch (e) {}
+          return Promise.reject(errorMessage);
+        });
       }
       return response.json();
     }).then(function(payload) {

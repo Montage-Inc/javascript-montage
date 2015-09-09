@@ -190,14 +190,14 @@ var Client = (function () {
             url: reqUrl }, options);
           return _Promise.reject(response);
         }
-        if (response.statusCode >= 400) {
-          var body = response.text();
-          //console.error(body);
-          var errorMessage = body || response.statusText;
-          try {
-            errorMessage = JSON.parse(body);
-          } catch (e) {}
-          return _Promise.reject(errorMessage);
+        if (response.status >= 400) {
+          return response.text().then(function (body) {
+            var errorMessage = body || response.statusText;
+            try {
+              errorMessage = JSON.parse(body);
+            } catch (e) {}
+            return _Promise.reject(errorMessage);
+          });
         }
         return response.json();
       }).then(function (payload) {

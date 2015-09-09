@@ -28,12 +28,12 @@ function mockedRequest(url, options) {
       } else {
         resolve({
           ok: success.ok,
-          statusCode: success.statusCode || 200,
+          status: success.status || 200,
           json: function() {
-            return success.body;
+            return Promise.resolve(success.body);
           },
           text: function() {
-            return success.body;
+            return Promise.resolve(success.body);
           }
         });
       }
@@ -62,7 +62,7 @@ describe('Client', () => {
       emitter.once('request', (request) => {
         request.callback(null, {
           ok: true,
-          statusCode: 403,
+          status: 403,
           body: JSON.stringify({errors: ['something went wrong']}),
         });
 
@@ -79,7 +79,7 @@ describe('Client', () => {
       emitter.once('request', (request) => {
         request.callback(null, {
           ok: true,
-          statusCode: 200,
+          status: 200,
           body: {errors: ['something went wrong']},
         });
 
@@ -104,7 +104,9 @@ describe('Client', () => {
         expect.fail();
       }, error => {
         //console.log(error);
-        expect(error.text()).to.be.eql('something went wrong');
+        return error.text().then(text => {
+          expect(text).to.be.eql('something went wrong');
+        });
       });
     });
   });

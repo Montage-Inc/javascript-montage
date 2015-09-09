@@ -1,6 +1,6 @@
 {
   "name": "montagedata",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "main": "dist/index.js",
   "description": "Client library for Montage Data",
   "scripts": {
