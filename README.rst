@@ -43,7 +43,8 @@ Create a client object::
     username: "YOUR_USERNAME",
     password: "YOUR_PASSWORD",
     api_version: 1, //default
-    domain: "test" //Your Montage subdomain or full url to montage (for testing)
+    domain: "test" //Your Montage subdomain
+    url: "" //full url to montage api, for testing
   });
 
   client.auth().then(response => {
