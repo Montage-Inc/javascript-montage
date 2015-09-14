@@ -41,7 +41,7 @@ Create a client object::
   //generate a token
   var client = new Client({
     username: "YOUR_USERNAME",
-    passwod: "YOUR_PASSWORD",
+    password: "YOUR_PASSWORD",
     api_version: 1, //default
     domain: "test" //Your Montage subdomain or full url to montage (for testing)
   });
