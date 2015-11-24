@@ -56,22 +56,22 @@ export class Client {
     var params = {cursor};
     return this.request(`schemas/${schema}/`, "GET", params);
   }
-  *paginated_documents(schema, query) {
-    //yields promises
+  //*paginated_documents(schema, query) {
+  //  //yields promises
 
-    var cursor;
+  //  var cursor;
 
-    function onResponse(response) {
-      cursor = response.cursors ? response.cursors.next : null;
-      return response.data;
-    }
+  //  function onResponse(response) {
+  //    cursor = response.cursors ? response.cursors.next : null;
+  //    return response.data;
+  //  }
 
-    yield this.documents(schema, query).then(onResponse);
+  //  yield this.documents(schema, query).then(onResponse);
 
-    while (cursor) {
-      yield this.document_cursor(schema, cursor).then(onResponse);
-    }
-  }
+  //  while (cursor) {
+  //    yield this.document_cursor(schema, cursor).then(onResponse);
+  //  }
+  //}
   create_document(schema, document) {
     return this.create_documents(schema, [document]);
   }
@@ -144,46 +144,53 @@ export class Client {
   _agent(...args) {
     return fetch(...args);
   }
-  //TODO files api
+  // TODO files api
 }
 
 export class Query {
-  constructor(state) {
+  constructor(tableName, state) {
+    if (!tableName) throw "Table name is required";
+
+    this.tableName = tableName;
+
     state = state || {
-      pluck: null,
-      limit: null,
-      offset: null,
-      order_by: null,
-      ordering: null,
-      filter: {},
-      without: [],
-      batch_size: 1000,
-      index: null,
-    };
+      '$table': tableName,
+      '$query': []
+    }
     this._state = state;
   }
   _merge(delta) {
     var state = _.merge({}, this._state, delta);
-    return new Query(state);
+    return new Query(this.tableName, state);
+  }
+  _mergeArray(delta) {
+    var index = _.findIndex(this._state['$query'], (item) => {
+      return item[0] === delta[0];
+    });
+
+    if (index !== -1) {
+      this._state['$query'][index] = delta;
+    } else {
+      this._state['$query'].push(delta);
+    }
+
+    return new Query(this.tableName, this._state);
   }
   limit(num) {
-    return this._merge({limit: num});
+    return this._mergeArray(['$limit', num]);
   }
   offset(num) {
-    return this._merge({offset: num});
+    return this._mergeArray(['$offset', num]);
   }
   order(order_by, ordering) {
     var parsedOrder;
     if(_.isString(ordering)) {
-      parsedOrder = ordering;
+      parsedOrder = `$${ordering}`;
     } else {
-      parsedOrder = ordering < 0 ? "desc" : "asc";
+      parsedOrder = ordering < 0 ? "$desc" : "$asc";
     }
 
-    return this._merge({
-      order_by: order_by,
-      ordering: parsedOrder,
-    });
+    return this._mergeArray(['$order_by', [parsedOrder, order_by]]);
   }
   pluck(fields) {
     return this._merge({pluck: fields});
