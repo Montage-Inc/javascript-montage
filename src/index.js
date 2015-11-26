@@ -32,6 +32,8 @@ export class Client {
     this.params = params;
     if (this.params.url) {
       this.url_prefix = this.params.url;
+    } else if (this.params.dev) {
+      this.url_prefix = `http://${params.domain}.dev.montagehot.club/api/v${params.api_version}/`;
     } else {
       this.url_prefix = `https://${params.domain}.mntge.com/api/v${params.api_version}/`;
     }
@@ -45,12 +47,16 @@ export class Client {
   files(formData) {
     return this.request(`files/`,'POST', formData, true);
   }
-  documents(schema, query) {
-    var params = query ? query.toJS() : {};
-    return this.request(`schemas/${schema}/query/`, "POST", params);
+  documents(query) {
+    return this.request(`query/`, 'POST', query)
   }
   document(schema, document_uuid) {
-    return this.request(`schemas/${schema}/${document_uuid}/`);
+    var documentQuery = {
+      '$schema': this.schema,
+      '$query': ['$get', document_uuid]
+    };
+
+    return this.request(`query/`, 'POST', documentQuery);
   }
   document_cursor(schema, cursor) {
     var params = {cursor};
@@ -148,20 +154,22 @@ export class Client {
 }
 
 export class Query {
-  constructor(tableName, state) {
-    if (!tableName) throw "Table name is required";
+  constructor(schemaName, state) {
+    if (!schemaName) throw "Schema name is required";
 
-    this.tableName = tableName;
+    this.schemaName = schemaName;
 
     state = state || {
-      '$table': tableName,
-      '$query': []
+      '$schema': schemaName,
+      '$query': [
+        ['$filter', []] 
+      ]
     }
     this._state = state;
   }
   _merge(delta) {
     var state = _.merge({}, this._state, delta);
-    return new Query(this.tableName, state);
+    return new Query(this.schemaName, state);
   }
   _mergeArray(delta) {
     var index = _.findIndex(this._state['$query'], (item) => {
@@ -174,7 +182,7 @@ export class Query {
       this._state['$query'].push(delta);
     }
 
-    return new Query(this.tableName, this._state);
+    return new Query(this.schemaName, this._state);
   }
   limit(num) {
     return this._mergeArray(['$limit', num]);
@@ -193,19 +201,32 @@ export class Query {
     return this._mergeArray(['$order_by', [parsedOrder, order_by]]);
   }
   pluck(fields) {
-    return this._merge({pluck: fields});
+    return this._mergeArray(['$pluck', fields]);
   }
   without(fields) {
-    return this._merge({without: fields});
+    return this._mergeArray(['$without', fields]);
   }
   pageSize(size) {
-    return this._merge({batch_size: size});
+    return this._mergeArray(['$limit', size]);
   }
   index(indexName) {
-    return this._merge({index: indexName});
+    return this._mergeArray(['$index', indexName]);
   }
   filter(params) {
-    return this._merge({filter: params});
+    var filterIndex = _.findIndex(this._state['$query'], (item) => {
+      return item[0] === '$filter';
+    });
+    var filters = this._state['$query'][filterIndex];
+
+    Object.keys(params).forEach((key) => {
+      var [field, operator] = key.split("__");
+      var queryField = operator ? [`$${operator}`, params[key]] : params[key];
+
+      
+      filters[1].push([field, queryField]);
+    })
+
+    return this._mergeArray(filters);
   }
   where(params) {
     //alias

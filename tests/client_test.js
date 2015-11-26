@@ -55,7 +55,44 @@ describe('Client', () => {
 
   beforeEach(() => {
     client = new MockedClient();
-  })
+  });
+
+  describe('initialize', () => {
+    context('when the api version is not specified', () => {
+      it('should set a default api version of 1', () => {
+        var client = new Client();
+        expect(client.params.api_version).to.be(1);
+      });
+    });
+
+    context('when the api version is specified', () => {
+      it('should set the version', () => {
+        var client = new Client({api_version: 4});
+        expect(client.params.api_version).to.be(4);
+      });
+    });
+
+    context('when a url param is passed in', () => {
+      it('should set the url prefix to the url', () => {
+        var client = new Client({url: 'https://www.foo.com'});
+        expect(client.url_prefix).to.be('https://www.foo.com');
+      });
+    });
+
+    context('when a url param is not passed in', () => {
+      it('should set the url to the montage production site', () => {
+        var client = new Client({domain: 'foo'});
+        expect(client.url_prefix).to.be('https://foo.mntge.com/api/v1/');
+      });
+    });
+
+    context('when the dev param is set to true', () => {
+      it('should use the dev montage domain', () => {
+        var client = new Client({dev: true, domain: 'foo'});
+        expect(client.url_prefix).to.be('http://foo.dev.montagehot.club/api/v1/');
+      });
+    });
+  });
 
   describe('request', () => {
     it('rejects validation errors and attempts to return JSON', () => {
@@ -147,7 +184,7 @@ describe('Client', () => {
   describe('documents', () => {
     it('returns promise from documents endpoint', () => {
       emitter.once('request', (request) => {
-        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/query/');
+        expect(_.last(request.url.split('/v1/'))).to.be('query/');
         expect(request.method).to.be('POST');
         request.callback(null, {
           ok: true,
@@ -159,31 +196,31 @@ describe('Client', () => {
       });
     });
 
-    it('sends query params as get params', () => {
-      emitter.once('request', (request) => {
-        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/query/');
-        //ow nested JSON serializeation
-        expect(JSON.parse(request.body).filter).to.eql({
-          rating__gt: 5
-        });
-        expect(request.method).to.be('POST');
-        request.callback(null, {
-          ok: true,
-          body: 'movie instances FTW',
-        });
-      });
-      var query = new Query('foo').filter({rating__gt: 5})
-      return client.documents('movies', query).then((response) => {
-        expect(response).to.be('movie instances FTW')
-      });
-    });
+    //it('sends query params as get params', () => {
+    //  emitter.once('request', (request) => {
+    //    expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/query/');
+    //    //ow nested JSON serializeation
+    //    expect(JSON.parse(request.body).filter).to.eql({
+    //      rating__gt: 5
+    //    });
+    //    expect(request.method).to.be('POST');
+    //    request.callback(null, {
+    //      ok: true,
+    //      body: 'movie instances FTW',
+    //    });
+    //  });
+    //  var query = new Query('foo').filter({rating__gt: 5})
+    //  return client.documents('movies', query).then((response) => {
+    //    expect(response).to.be('movie instances FTW')
+    //  });
+    //});
   });
 
   describe('document', () => {
     it('returns promise from document endpoint', () => {
       emitter.once('request', (request) => {
-        expect(_.last(request.url.split('/v1/'))).to.be('schemas/movies/foobar/');
-        expect(request.method).to.be('GET');
+        expect(_.last(request.url.split('/v1/'))).to.be('query/');
+        expect(request.method).to.be('POST');
         request.callback(null, {
           ok: true,
           body: 'foobar movie',
