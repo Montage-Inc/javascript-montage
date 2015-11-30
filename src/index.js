@@ -94,7 +94,10 @@ export class Client {
     return this.request("auth/", "POST", {
       username: this.params.username,
       password: this.params.password,
-    }).then(response => this.params.token = response.data.token);
+    }).then(response => {
+      this.params.token = response.data.token;
+      return response;
+    });
   }
   request(url, method, data, file) {
     var options = {

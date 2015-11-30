@@ -310,14 +310,15 @@ describe('Client', () => {
         }));
         request.callback(null, {
           ok: true,
-          body: {token: 'FOO'},
+          body: {data: { token: 'FOO'}},
         });
       });
       client.params.username = 'johnsmith';
       client.params.password = 'secret';
       return client.auth().then((response) => {
-        expect(response).to.be.eql({token: 'FOO'})
+        expect(response).to.be.eql({data: {token: 'FOO'}})
       });
+      expect(client.params.token).to.be.eql('FOO');
     });
   });
 
