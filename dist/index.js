@@ -82,18 +82,18 @@ var Client = (function () {
     }
   }, {
     key: 'documents',
-    value: function documents(query) {
-      return this.request('query/', 'POST', query);
+    value: function documents(queries) {
+      return this.request('query/', 'POST', queries);
     }
   }, {
     key: 'document',
     value: function document(schema, document_uuid) {
       var documentQuery = {
-        '$schema': this.schema,
-        '$query': ['$get', document_uuid]
+        '$schema': schema,
+        '$query': [['$get', document_uuid]]
       };
 
-      return this.request('query/', 'POST', documentQuery);
+      return this.request('query/', 'POST', { query: documentQuery });
     }
   }, {
     key: 'document_cursor',
@@ -141,9 +141,13 @@ var Client = (function () {
   }, {
     key: 'auth',
     value: function auth() {
+      var _this = this;
+
       return this.request('auth/', 'POST', {
         username: this.params.username,
         password: this.params.password
+      }).then(function (response) {
+        return _this.params.token = response.data.token;
       });
     }
   }, {
@@ -163,6 +167,7 @@ var Client = (function () {
         if (options.method === 'GET') {
           url += '?' + _querystring2['default'].stringify(data);
         } else {
+          console.log(data);
           if (file) options.body = data;else options.body = JSON.stringify(data);
         }
       }

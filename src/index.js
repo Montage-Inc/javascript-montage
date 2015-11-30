@@ -47,16 +47,16 @@ export class Client {
   files(formData) {
     return this.request(`files/`,'POST', formData, true);
   }
-  documents(query) {
-    return this.request(`query/`, 'POST', query)
+  documents(queries) {
+    return this.request(`query/`, 'POST', queries)
   }
   document(schema, document_uuid) {
     var documentQuery = {
-      '$schema': this.schema,
-      '$query': ['$get', document_uuid]
+      '$schema': schema,
+      '$query': [['$get', document_uuid]]
     };
 
-    return this.request(`query/`, 'POST', documentQuery);
+    return this.request(`query/`, 'POST', { query: documentQuery });
   }
   document_cursor(schema, cursor) {
     var params = {cursor};
@@ -94,7 +94,7 @@ export class Client {
     return this.request("auth/", "POST", {
       username: this.params.username,
       password: this.params.password,
-    });
+    }).then(response => this.params.token = response.data.token);
   }
   request(url, method, data, file) {
     var options = {
