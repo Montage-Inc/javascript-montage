@@ -1,6 +1,6 @@
 {
   "name": "montagedata",
-  "version": "0.5.2",
+  "version": "2.1.0",
   "main": "dist/index.js",
   "description": "Client library for Montage Data",
   "scripts": {
@@ -26,7 +26,7 @@
     "form-data": "^1.0.0-rc3",
     "gulp": "3.9.0",
     "gulp-babel": "5.1.0",
-    "gulp-mocha": "2.1.2",
+    "gulp-mocha": "2.2.0",
     "gulp-webpack": "1.5.0",
     "json-loader": "^0.5.2",
     "merge-stream": "0.1.8",
