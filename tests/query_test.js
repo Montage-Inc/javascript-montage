@@ -32,14 +32,14 @@ describe('Query', () => {
         var state = {
           '$schema': 'foo',
           '$query': [
-            ['$filter', []], 
+            ['$filter', []],
             ['$limit', 5]
           ]
         };
         var expected = {
           '$schema': 'foo',
           '$query': [
-            ['$filter', []], 
+            ['$filter', []],
             ['$limit', 6]
           ]
         };
@@ -59,6 +59,20 @@ describe('Query', () => {
         };
         var query = new Query('foo');
         expect(query._mergeArray(['$limit', 6]).toJS()).to.eql(state);
+      })
+    })
+
+    context('when the prepend option is true', () => {
+      it('should prepend the query', () => {
+        var state = {
+          '$schema': 'foo',
+          '$query': [
+            ['$between', 'foo'],
+            ['$filter', []]
+          ]
+        };
+        var query = new Query('foo');
+        expect(query._mergeArray(['$between', 'foo'], true).toJS()).to.eql(state);
       })
     })
   })
@@ -161,6 +175,22 @@ describe('Query', () => {
       var query = new Query('foo');
       var params = query.index('fullText').toJS();
       var expected = [['$filter', []], ['$index', 'fullText']];
+      expect(params['$query']).to.be.eql(expected);
+    });
+  });
+
+  describe('between', () => {
+    it('should require a from and a to', () => {
+      var query = new Query('foo');
+      var params = query.between().toJS();
+      var expected = [['$filter', []]];
+      expect(params['$query']).to.be.eql(expected);
+    });
+
+    it('should prepend the between operator', () => {
+      var query = new Query('foo');
+      var params = query.between({ from: 1, to: 10, index: 'rank' }).toJS();
+      var expected = [['$between', [1, 10, 'rank']], ['$filter', []]];
       expect(params['$query']).to.be.eql(expected);
     });
   });

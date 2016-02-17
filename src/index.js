@@ -165,7 +165,7 @@ export class Query {
     state = state || {
       '$schema': schemaName,
       '$query': [
-        ['$filter', []] 
+        ['$filter', []]
       ]
     }
     this._state = state;
@@ -174,7 +174,7 @@ export class Query {
     var state = _.merge({}, this._state, delta);
     return new Query(this.schemaName, state);
   }
-  _mergeArray(delta) {
+  _mergeArray(delta, prepend = false) {
     var index = _.findIndex(this._state['$query'], (item) => {
       return item[0] === delta[0];
     });
@@ -182,7 +182,11 @@ export class Query {
     if (index !== -1) {
       this._state['$query'][index] = delta;
     } else {
-      this._state['$query'].push(delta);
+      if (prepend) {
+        this._state['$query'].unshift(delta);
+      } else {
+        this._state['$query'].push(delta);
+      }
     }
 
     return new Query(this.schemaName, this._state);
@@ -225,7 +229,6 @@ export class Query {
       var [field, operator] = key.split("__");
       var queryField = operator ? [`$${operator}`, params[key]] : params[key];
 
-      
       filters[1].push([field, queryField]);
     })
 
@@ -234,6 +237,12 @@ export class Query {
   where(params) {
     //alias
     return this.filter(params);
+  }
+  between(params) {
+    if (params && params.from && params.to) {
+      return this._mergeArray(['$between', [params.from, params.to, params.index]], true)
+    }
+    return this;
   }
   toJS() {
     return this._state;

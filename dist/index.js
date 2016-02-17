@@ -147,7 +147,8 @@ var Client = (function () {
         username: this.params.username,
         password: this.params.password
       }).then(function (response) {
-        return _this.params.token = response.data.token;
+        _this.params.token = response.data.token;
+        return response;
       });
     }
   }, {
@@ -167,7 +168,6 @@ var Client = (function () {
         if (options.method === 'GET') {
           url += '?' + _querystring2['default'].stringify(data);
         } else {
-          console.log(data);
           if (file) options.body = data;else options.body = JSON.stringify(data);
         }
       }
