@@ -1,12 +1,12 @@
-var webpack = require("webpack");
+var webpack = require('webpack');
 var path = require('path');
 
 module.exports = {
 	context: __dirname,
 	entry: './src/index.js',
 	output: {
-		libraryTarget: "umd",
-		library: "Montage",
+		libraryTarget: 'umd',
+		library: 'Montage',
 		filename: './dist/montage.js'
 	},
 	module: {
