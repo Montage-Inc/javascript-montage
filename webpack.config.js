@@ -1,4 +1,5 @@
 var webpack = require("webpack");
+var path = require('path');
 
 module.exports = {
 	context: __dirname,
@@ -12,7 +13,9 @@ module.exports = {
 		loaders: [{
 			test: /\.js$/,
 			loader: 'babel-loader',
-			exclude: /(bower_components|node_modules)/,
+			include: [
+				path.resolve(__dirname, 'src')
+			],
 			query: {
 				plugins: ['transform-runtime'],
 				presets: ['es2015']
