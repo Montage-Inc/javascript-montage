@@ -11,8 +11,12 @@ module.exports = {
   module: {
     loaders: [{
       test: /\.js$/,
-      loader: 'babel-loader?stage=0&optional=runtime',
-      exclude: /(bower_components|node_modules)/
+      loader: 'babel-loader',
+      exclude: /(bower_components|node_modules)/,
+      query: {
+        plugins: ['transform-runtime'],
+        presets: ['es2015']
+      }
     },
     ]
   },
