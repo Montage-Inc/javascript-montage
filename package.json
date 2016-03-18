@@ -31,7 +31,6 @@
     "json-loader": "^0.5.2",
     "merge-stream": "0.1.8",
     "uglify-js": "2.4.23",
-    "watchpack": "^0.2.8",
     "webpack": "1.10.0",
     "webpack-core": "^0.6.5"
   }
