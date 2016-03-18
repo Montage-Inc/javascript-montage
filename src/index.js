@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-fetch';
 import querystring from 'querystring';
 import _ from 'lodash';
-import { DocumentsAPI, SchemaAPI, UserAPI } from './api';
+import { DocumentsAPI, SchemaAPI, UserAPI, RoleAPI } from './api';
 
 
 /**
@@ -44,6 +44,7 @@ export class Client {
 		this.documents = new DocumentsAPI(this);
 		this.schemas = new SchemaAPI(this);
 		this.users = new UserAPI(this);
+		this.roles = new RoleAPI(this);
 	}
 
 	files(formData) {
