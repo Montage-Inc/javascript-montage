@@ -6,6 +6,8 @@ import _ from 'lodash';
 /**
  * Count bytes in a string's UTF-8 representation.
  *
+ * [Reference]{@link http://codereview.stackexchange.com/a/37552}
+ *
  * @param   string
  * @return  int
  */
