@@ -8,8 +8,8 @@ import _ from 'lodash';
  *
  * [Reference]{@link http://codereview.stackexchange.com/a/37552}
  *
- * @param   string
- * @return  int
+ * @param {string} normal_val
+ * @return {int}
  */
 export function getByteLen(normal_val) {
 	// Force string type
