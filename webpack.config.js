@@ -17,8 +17,7 @@ module.exports = {
 				plugins: ['transform-runtime'],
 				presets: ['es2015']
 			}
-		},
-		]
+		}]
 	},
 	resolve: {
 		extensions: ['', '.js', '.jsx']
