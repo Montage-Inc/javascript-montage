@@ -20,7 +20,7 @@ module.exports = {
 		}]
 	},
 	resolve: {
-		extensions: ['', '.js', '.jsx']
+		extensions: ['', '.js']
 	},
 	plugins: [
 		new webpack.optimize.DedupePlugin(),
