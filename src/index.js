@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-fetch';
 import querystring from 'querystring';
 import _ from 'lodash';
-import { DocumentsAPI } from './api';
+import { DocumentsAPI, SchemaAPI } from './api';
 
 
 /**
@@ -42,14 +42,7 @@ export class Client {
 		}
 
 		this.documents = new DocumentsAPI(this);
-	}
-
-	schemas() {
-		return this.request(`schemas/`);
-	}
-
-	schema(name) {
-		return this.request(`schemas/${name}/`);
+		this.schemas = new SchemaAPI(this);
 	}
 
 	files(formData) {
