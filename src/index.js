@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-fetch';
 import querystring from 'querystring';
 import _ from 'lodash';
+import { DocumentsAPI } from './api';
 
 
 /**
@@ -39,6 +40,8 @@ export class Client {
 		} else {
 			this.url_prefix = `https://${params.domain}.mntge.com/api/v${params.api_version}/`;
 		}
+
+		this.documents = new DocumentsAPI(this);
 	}
 
 	schemas() {
@@ -51,56 +54,6 @@ export class Client {
 
 	files(formData) {
 		return this.request(`files/`,'POST', formData, true);
-	}
-
-	documents(queries) {
-		return this.request(`query/`, 'POST', queries)
-	}
-
-	document(schema, document_uuid) {
-		var documentQuery = {
-			'$schema': schema,
-			'$query': [['$get', document_uuid]]
-		};
-
-		return this.request(`query/`, 'POST', { query: documentQuery });
-	}
-
-	document_cursor(schema, cursor) {
-		var params = {cursor};
-		return this.request(`schemas/${schema}/`, "GET", params);
-	}
-
-	//*paginated_documents(schema, query) {
-	//  //yields promises
-
-	//  var cursor;
-
-	//  function onResponse(response) {
-	//    cursor = response.cursors ? response.cursors.next : null;
-	//    return response.data;
-	//  }
-
-	//  yield this.documents(schema, query).then(onResponse);
-
-	//  while (cursor) {
-	//    yield this.document_cursor(schema, cursor).then(onResponse);
-	//  }
-	//}
-	create_document(schema, document) {
-		return this.create_documents(schema, [document]);
-	}
-
-	create_documents(schema, documents) {
-		return this.request(`schemas/${schema}/save/`, "POST", documents);
-	}
-
-	update_document(schema, document_uuid, document) {
-		return this.request(`schemas/${schema}/${document_uuid}/`, "POST", document);
-	}
-
-	delete_document(schema, document_uuid) {
-		return this.request(`schemas/${schema}/${document_uuid}/`, "DELETE");
 	}
 
 	auth() {
