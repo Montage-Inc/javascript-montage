@@ -20,9 +20,9 @@ gulp.task('test', function () {
 });
 
 gulp.task('webpack', function () {
-	var myConfig = Object.create(require('./webpack.config'));
+	var webpackConfig = Object.create(require('./webpack.config'));
 
 	return gulp.src('src/')
-		.pipe(webpack(myConfig))
+		.pipe(webpack(webpackConfig))
 		.pipe(gulp.dest('./'));
 });
