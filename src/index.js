@@ -89,6 +89,9 @@ export class Client {
 		}
 		var reqUrl = `${this.url_prefix}${url}`
 		return this._agent(reqUrl, options).then(function(response) {
+			if(response.status === 204) {
+				return;
+			}
 			if (!response.ok) {
 				response.request = _.merge({
 					url: reqUrl,
