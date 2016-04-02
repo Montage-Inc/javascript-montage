@@ -1,12 +1,12 @@
 var gulp = require('gulp');
-var to5 = require('gulp-babel');
+var babel = require('gulp-babel');
 var mocha = require('gulp-mocha');
 var webpack = require('gulp-webpack');
 
 
 gulp.task('build', function () {
 	return gulp.src('src/**/*.js')
-		.pipe(to5({stage: 1, optional: 'runtime'}))
+		.pipe(babel({stage: 1, optional: 'runtime'}))
 		.pipe(gulp.dest('dist'));
 });
 
