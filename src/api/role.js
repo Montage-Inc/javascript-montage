@@ -1,4 +1,4 @@
-export class RoleAPI {
+export default class RoleAPI {
 	constructor(client) {
 		this.client = client;
 	}

@@ -1,9 +1,9 @@
 import fetch from 'isomorphic-fetch';
 import querystring from 'querystring';
 import _ from 'lodash';
-import { RoleAPI } from './api';
 import DocumentsAPI from './api/documents';
 import FileAPI from './api/file';
+import RoleAPI from './api/role';
 import SchemaAPI from './api/schema';
 import UserAPI from './api/user';
 
