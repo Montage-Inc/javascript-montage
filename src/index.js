@@ -1,10 +1,11 @@
 import fetch from 'isomorphic-fetch';
 import querystring from 'querystring';
 import _ from 'lodash';
-import { UserAPI, RoleAPI } from './api';
+import { RoleAPI } from './api';
 import DocumentsAPI from './api/documents';
 import FileAPI from './api/file';
 import SchemaAPI from './api/schema';
+import UserAPI from './api/user';
 
 /**
  * Count bytes in a string's UTF-8 representation.
