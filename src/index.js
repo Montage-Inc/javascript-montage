@@ -32,7 +32,7 @@ function getByteLen(normal_val) {
 	return byteLen;
 }
 
-export class Client {
+class Client {
 	constructor(params = {}) {
 		params.api_version = params.api_version || 1;
 		this.params = params;
@@ -121,7 +121,7 @@ export class Client {
 	}
 }
 
-export class Query {
+class Query {
 	constructor(schemaName, state) {
 		if (!schemaName) throw "Schema name is required";
 
@@ -226,3 +226,8 @@ export class Query {
 		return this._state;
 	}
 }
+
+export {
+	Client,
+	Query
+};
