@@ -1,7 +1,7 @@
 import fetch from 'isomorphic-fetch';
 import querystring from 'querystring';
 import _ from 'lodash';
-import { DocumentsAPI, SchemaAPI, UserAPI, RoleAPI } from './api';
+import { DocumentsAPI, SchemaAPI, UserAPI, RoleAPI, FileAPI } from './api';
 
 
 /**
@@ -45,10 +45,7 @@ export class Client {
 		this.schemas = new SchemaAPI(this);
 		this.users = new UserAPI(this);
 		this.roles = new RoleAPI(this);
-	}
-
-	files(formData) {
-		return this.request(`files/`,'POST', formData, true);
+		this.files = new FileAPI(this);
 	}
 
 	auth() {
@@ -119,8 +116,6 @@ export class Client {
 	_agent(...args) {
 		return fetch(...args);
 	}
-
-	// TODO files api
 }
 
 export class Query {
