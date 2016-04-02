@@ -12,7 +12,7 @@ import { DocumentsAPI, SchemaAPI, UserAPI, RoleAPI } from './api';
  * @param {string} normal_val
  * @return {int}
  */
-export function getByteLen(normal_val) {
+function getByteLen(normal_val) {
 	// Force string type
 	normal_val = String(normal_val);
 
