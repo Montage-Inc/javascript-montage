@@ -1,8 +1,8 @@
 import fetch from 'isomorphic-fetch';
 import querystring from 'querystring';
 import _ from 'lodash';
-import { DocumentsAPI, SchemaAPI, UserAPI, RoleAPI, FileAPI } from './api';
-
+import { SchemaAPI, UserAPI, RoleAPI, FileAPI } from './api';
+import DocumentsAPI from './api/documents';
 
 /**
  * Count bytes in a string's UTF-8 representation.
