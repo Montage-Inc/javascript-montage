@@ -1,4 +1,4 @@
-export default class DocumentsAPI {
+export default class DocumentAPI {
 	constructor(client) {
 		this.client = client;
 	}

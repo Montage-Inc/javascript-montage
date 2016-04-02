@@ -2,7 +2,7 @@ import fetch from 'isomorphic-fetch';
 import querystring from 'querystring';
 import _ from 'lodash';
 
-import DocumentsAPI from './api/documents';
+import DocumentAPI from './api/document';
 import FileAPI from './api/file';
 import RoleAPI from './api/role';
 import SchemaAPI from './api/schema';
@@ -20,7 +20,7 @@ export default class Client {
 			this.url_prefix = `https://${params.domain}.mntge.com/api/v${params.api_version}/`;
 		}
 
-		this.documents = new DocumentsAPI(this);
+		this.documents = new DocumentAPI(this);
 		this.schemas = new SchemaAPI(this);
 		this.users = new UserAPI(this);
 		this.roles = new RoleAPI(this);
