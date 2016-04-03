@@ -6,14 +6,12 @@ var webpack = require('gulp-webpack');
 
 gulp.task('build', function () {
 	return gulp.src('src/**/*.js')
-		.pipe(babel({stage: 1, optional: 'runtime'}))
+		.pipe(babel())
 		.pipe(gulp.dest('dist'));
 });
 
 gulp.task('test', function () {
-	require("babel/register")({
-		stage: 1, optional: 'runtime'
-	});
+	require('babel-core/register');
 
 	return gulp.src('tests/**/*test.js')
 		.pipe(mocha({reporter: 'nyan'}));
