@@ -13,7 +13,7 @@ gulp.task('build', function () {
 gulp.task('test', function () {
 	require('babel-core/register');
 
-	return gulp.src('tests/**/*test.js', { read: false })
+	return gulp.src('tests/**/*_test.js', { read: false })
 		.pipe(mocha());
 });
 
