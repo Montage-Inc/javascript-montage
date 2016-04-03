@@ -15,11 +15,7 @@ module.exports = {
 			loader: 'babel-loader',
 			include: [
 				path.resolve(__dirname, 'src')
-			],
-			query: {
-				plugins: ['transform-runtime'],
-				presets: ['es2015']
-			}
+			]
 		}]
 	},
 	resolve: {
