@@ -8,17 +8,12 @@ import RoleAPI from './api/role';
 import SchemaAPI from './api/schema';
 import UserAPI from './api/user';
 
+const BASE_URL = 'mntge.com';
+
 export default class Client {
-	constructor(params = {}) {
-		params.api_version = params.api_version || 1;
-		this.params = params;
-		if (this.params.url) {
-			this.url_prefix = this.params.url;
-		} else if (this.params.dev) {
-			this.url_prefix = `http://${params.domain}.dev.montagehot.club/api/v${params.api_version}/`;
-		} else {
-			this.url_prefix = `https://${params.domain}.mntge.com/api/v${params.api_version}/`;
-		}
+	constructor(subdomain, token, url = BASE_URL) {
+		this.hostname = `${subdomain}.${url}`;
+		this.token = token;
 
 		this.documents = new DocumentAPI(this);
 		this.schemas = new SchemaAPI(this);
@@ -27,50 +22,76 @@ export default class Client {
 		this.files = new FileAPI(this);
 	}
 
-	auth() {
-		return this.request("auth/", "POST", {
-			username: this.params.username,
-			password: this.params.password,
+	url(endpoint) {
+		return `https://${this.hostname}/api/v1/${endpoint}`;
+	}
+
+	authenticate(email, password) {
+		return this.request('user/', 'POST', {
+			username: email,
+			password: password
 		}).then(response => {
-			this.params.token = response.data.token;
+			this.token = response.data.token;
 			return response;
 		});
 	}
 
-	request(url, method, data, file) {
+	user() {
+		if(this.token) {
+			return this.request('user/');
+		}
+
+		return Promise.reject('The current user is not authenticated.')
+	}
+
+	execute(queries) {
+		var querySet = {};
+
+		for(var key in queries) {
+			if(queries.hasOwnProperty(key)) {
+				querySet[key] = queries[key].toJS();
+			}
+		}
+
+		return this.request('execute/', 'POST', querySet);
+	}
+
+	request(endpoint, method, data, file) {
+		var requestUrl = this.url(endpoint);
+
 		var options = {
 			method: method && method.toUpperCase() || "GET",
 			headers: {
 				accept: 'application/json',
-				'X-Requested-With': 'XMLHttpRequest',
+				'X-Requested-With': 'XMLHttpRequest'
 			}
-		}
+		};
 		if (!file) {
 			options.headers['Content-Type'] = 'application/json';
 		}
 		if (data) {
 			if (options.method === "GET") {
-				url += '?' + querystring.stringify(data);
+				requestUrl += '?' + querystring.stringify(data);
 			} else {
-				if(file) options.body = data
+				if(file) options.body = data;
 				else options.body = JSON.stringify(data);
 			}
 		}
-		if (this.params.token) {
-			options.headers.Authorization = `Token ${this.params.token}`;
+		if (this.token) {
+			options.headers.Authorization = `Token ${this.token}`;
 		}
 		if (options.body) {
 			//Varnish and heroku require a content length!
 			options.headers['Content-Length'] = getByteLen(options.body);
 		}
-		var reqUrl = `${this.url_prefix}${url}`
-		return this._agent(reqUrl, options).then(function(response) {
+
+		return this._agent(requestUrl, options).then(function(response) {
 			if(response.status === 204) {
 				return;
 			}
 			if (!response.ok) {
 				response.request = _.merge({
-					url: reqUrl,
+					url: requestUrl
 				}, options);
 				return Promise.reject(response);
 			}
