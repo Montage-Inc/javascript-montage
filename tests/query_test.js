@@ -1,197 +1,173 @@
 import expect from 'expect.js';
 import {Query} from '../src/index';
-import _ from 'lodash';
 
+var query;
 
 describe('Query', () => {
-	describe('initialize', () => {
+	beforeEach(function() {
+		query = new Query('testSchema');
+	});
+
+	describe('initialization', () => {
 		it('should require a schema name', () => {
-			var query = new Query("foo");
-			expect(query.schemaName).to.be("foo");
+			expect(query.schema).to.be('testSchema');
 		});
-
-		it('should setup the default query object', () => {
-			var query = new Query("foo");
-			var expected = {
-				'$schema': 'foo',
-				'$query': [['$filter', []]]
-			};
-
-			expect(query.toJS()).to.eql(expected);
-		});
-
-		it('should not overwrite default state', () => {
-			var query = new Query("foo", {bar: "baz"})
-			expect(query.toJS()).to.eql({bar: "baz"})
-		})
 	});
 
-	describe('_mergeArray', () => {
-		context('when the item exists already', () => {
-			it('should overwrite it with the new item', () => {
-				var state = {
-					'$schema': 'foo',
-					'$query': [
-						['$filter', []],
-						['$limit', 5]
-					]
-				};
-				var expected = {
-					'$schema': 'foo',
-					'$query': [
-						['$filter', []],
-						['$limit', 6]
-					]
-				};
-				var query = new Query('foo', state);
-				expect(query._mergeArray(['$limit', 6]).toJS()).to.eql(expected);
-			})
-		})
+	describe('#toJS()', () => {
+		it('should return a query object', () => {
+			expect(query.toJS()).to.eql({
+				$schema: 'testSchema',
+				$query: []
+			});
+		});
+	});
 
-		context('when the item does not exist already', () => {
-			it('should add the new item', () => {
-				var state = {
-					'$schema': 'foo',
-					'$query': [
-						['$filter', []],
-						['$limit', 6]
-					]
-				};
-				var query = new Query('foo');
-				expect(query._mergeArray(['$limit', 6]).toJS()).to.eql(state);
-			})
-		})
+	describe('#get()', () => {
+		it('sets get', () => {
+			query.get('1234');
+			expect(query.terms).to.eql([['$get', '1234']]);
+		});
+	});
 
-		context('when the prepend option is true', () => {
-			it('should prepend the query', () => {
-				var state = {
-					'$schema': 'foo',
-					'$query': [
-						['$between', 'foo'],
-						['$filter', []]
-					]
-				};
-				var query = new Query('foo');
-				expect(query._mergeArray(['$between', 'foo'], true).toJS()).to.eql(state);
-			})
-		})
-	})
+	describe('#getAll()', () => {
+		it('sets getAll', () => {
+			query.getAll(['1234', 'abcd']);
+			expect(query.terms).to.eql([['$get_all', ['id', ['1234', 'abcd']]]]);
+		});
+	});
 
-	describe('limit', () => {
+	describe('#hasFields()', () => {
+		it('sets hasFields', () => {
+			query.hasFields('title', 'rating');
+			expect(query.terms).to.eql([['$has_fields', ['title', 'rating']]]);
+		});
+	});
+
+	describe('#withFields()', () => {
+		it('sets withFields', () => {
+			query.withFields('title', 'rating');
+			expect(query.terms).to.eql([['$with_fields', ['title', 'rating']]]);
+		});
+	});
+
+	describe('#orderBy()', () => {
+		context('when no direction supplied', () => {
+			it('sets order_by and default direction', () => {
+				query.orderBy('rating');
+				expect(query.terms).to.eql([['$order_by', 'rating', '$asc']]);
+			});
+		});
+
+		context('when direction is ascending', () => {
+			it('sets order_by and ascending direction', () => {
+				query.orderBy('rating', 'asc');
+				expect(query.terms).to.eql([['$order_by', 'rating', '$asc']]);
+			});
+		});
+
+		context('when direction is descending', () => {
+			it('sets order_by and descending direction', () => {
+				query.orderBy('rating', 'desc');
+				expect(query.terms).to.eql([['$order_by', 'rating', '$desc']]);
+			});
+		});
+
+		context('when direction is invalid', () => {
+			it('should throw an exception', () => {
+				expect(query.orderBy).withArgs('rating', -1).to.throwException();
+			});
+		});
+	});
+
+	describe('#skip()', () => {
+		it('sets skip', () => {
+			query.skip(10);
+			expect(query.terms).to.eql([['$skip', 10]]);
+		});
+	});
+
+	describe('#limit()', () => {
 		it('sets limit', () => {
-			var query = new Query('foo');
-			var params = query.limit(5).toJS();
-			var expected = [['$filter', []], ['$limit', 5]];
-
-			expect(params['$query']).to.eql(expected);
+			query.limit(10);
+			expect(query.terms).to.eql([['$limit', 10]]);
 		});
 	});
 
-	describe('offset', () => {
-		it('sets offset', () => {
-			var query = new Query('foo');
-			var params = query.offset(5).toJS();
-			var expected = [['$filter', []], ['$offset', 5]];
-			expect(params['$query']).to.eql(expected);
+	describe('#slice()', () => {
+		it('sets slice', () => {
+			query.slice(10, 20);
+			expect(query.terms).to.eql([['$slice', [10, 20]]]);
 		});
 	});
 
-	describe('order', () => {
-		it('sets order_by and direction', () => {
-			var query = new Query('foo');
-			var params = query.order('rating', -1).toJS();
-			var expected = [['$filter', []], ['$order_by', ['$desc', 'rating']]];
-			expect(params['$query']).to.eql(expected);
-
-			expected = [['$filter', []], ['$order_by', ['$asc', 'rating']]];
-			params = query.order('rating', 1).toJS();
-			expect(params['$query']).to.eql(expected);
-		});
-
-		it('sets order_by and direction by string', () => {
-			var query = new Query('foo');
-			var params = query.order('rating', 'desc').toJS();
-			var expected = [['$filter', []], ['$order_by', ['$desc', 'rating']]];
-			expect(params['$query']).to.eql(expected);
-
-			expected = [['$filter', []], ['$order_by', ['$asc', 'rating']]];
-			params = query.order('rating', 'asc').toJS();
-			expect(params['$query']).to.eql(expected);
+	describe('#nth()', () => {
+		it('sets nth', () => {
+			query.nth(5);
+			expect(query.terms).to.eql([['$nth', 5]]);
 		});
 	});
 
-	describe('filter', () => {
-		it('sets filter params', () => {
-			var query = new Query('foo');
-			var params = query.filter({rating__gt: 5}).toJS();
-			var expected = [['$filter', [['rating', ['$gt', 5]]]]];
-			expect(params['$query']).to.eql(expected);
-		});
-
-		it('merges filter params', () => {
-			var query = new Query('foo');
-			var params = query.filter({rating__gt: 5})
-				.filter({author: 'speilberg'})
-				.toJS();
-			var expected = [
-				['$filter', [
-					['rating', ['$gt', 5]],
-					['author', 'speilberg']
-				]]
-			];
-			expect(params['$query']).to.eql(expected);
+	describe('#sample()', () => {
+		it('sets sample', () => {
+			query.sample(20);
+			expect(query.terms).to.eql([['$sample', 20]]);
 		});
 	});
 
-	describe('pluck', () => {
-		it('sets pluck params', () => {
-			var query = new Query('foo');
-			var params = query.pluck(['rating', 'id']).toJS();
-			var expected = [['$filter', []], ['$pluck', ['rating', 'id']]];
-			expect(params['$query']).to.be.eql(expected);
+	describe('#pluck()', () => {
+		it('sets pluck', () => {
+			query.pluck('name', 'rank', 'rating');
+			expect(query.terms).to.eql([['$pluck', ['name', 'rank', 'rating']]]);
 		});
 	});
 
-	describe('without', () => {
-		it('sets without params', () => {
-			var query = new Query('foo');
-			var params = query.without(['blob']).toJS();
-			var expected = [['$filter', []], ['$without', ['blob']]];
-			expect(params['$query']).to.be.eql(expected);
+	describe('#without()', () => {
+		it('sets without', () => {
+			query.without('votes', 'rank');
+			expect(query.terms).to.eql([['$without', ['votes', 'rank']]]);
 		});
 	});
 
-	describe('pageSize', () => {
-		it('sets batch_size params', () => {
-			var query = new Query('foo');
-			var params = query.pageSize(20).toJS();
-			var expected = [['$filter', []], ['$limit', 20]];
-			expect(params['$query']).to.be.eql(expected);
+	describe('#count()', () => {
+		it('sets count', () => {
+			query.count();
+			expect(query.terms).to.eql([['$count']]);
 		});
 	});
 
-	describe('index', () => {
-		it('sets index params', () => {
-			var query = new Query('foo');
-			var params = query.index('fullText').toJS();
-			var expected = [['$filter', []], ['$index', 'fullText']];
-			expect(params['$query']).to.be.eql(expected);
+	describe('#sum()', () => {
+		it('sets sum', () => {
+			query.sum('rank');
+			expect(query.terms).to.eql([['$sum', 'rank']]);
 		});
 	});
 
-	describe('between', () => {
-		it('should require a from and a to', () => {
-			var query = new Query('foo');
-			var params = query.between().toJS();
-			var expected = [['$filter', []]];
-			expect(params['$query']).to.be.eql(expected);
+	describe('#avg()', () => {
+		it('sets avg', () => {
+			query.avg('rank');
+			expect(query.terms).to.eql([['$avg', 'rank']]);
 		});
+	});
 
-		it('should prepend the between operator', () => {
-			var query = new Query('foo');
-			var params = query.between({from: 1, to: 10, index: 'rank'}).toJS();
-			var expected = [['$between', [1, 10, 'rank']], ['$filter', []]];
-			expect(params['$query']).to.be.eql(expected);
+	describe('#min()', () => {
+		it('sets min', () => {
+			query.min('rating');
+			expect(query.terms).to.eql([['$min', 'rating']]);
+		});
+	});
+
+	describe('#max()', () => {
+		it('sets max', () => {
+			query.max('rating');
+			expect(query.terms).to.eql([['$max', 'rating']]);
+		});
+	});
+
+	describe('#between()', () => {
+		it('sets between', () => {
+			query.between(0, 10, 'rank');
+			expect(query.terms).to.eql([['$between', [0, 10, 'rank']]]);
 		});
 	});
 });

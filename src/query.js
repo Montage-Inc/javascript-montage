@@ -1,107 +1,127 @@
 import _ from 'lodash';
 
 export default class Query {
-	constructor(schemaName, state) {
-		if (!schemaName) throw "Schema name is required";
+	constructor(schema) {
+		if (!schema) throw 'A schema name is required';
 
-		this.schemaName = schemaName;
-
-		state = state || {
-				'$schema': schemaName,
-				'$query': [
-					['$filter', []]
-				]
-			}
-		this._state = state;
-	}
-
-	_merge(delta) {
-		var state = _.merge({}, this._state, delta);
-		return new Query(this.schemaName, state);
-	}
-
-	_mergeArray(delta, prepend = false) {
-		var index = _.findIndex(this._state['$query'], (item) => {
-			return item[0] === delta[0];
-		});
-
-		if (index !== -1) {
-			this._state['$query'][index] = delta;
-		} else {
-			if (prepend) {
-				this._state['$query'].unshift(delta);
-			} else {
-				this._state['$query'].push(delta);
-			}
-		}
-
-		return new Query(this.schemaName, this._state);
-	}
-
-	limit(num) {
-		return this._mergeArray(['$limit', num]);
-	}
-
-	offset(num) {
-		return this._mergeArray(['$offset', num]);
-	}
-
-	order(order_by, ordering) {
-		var parsedOrder;
-		if(_.isString(ordering)) {
-			parsedOrder = `$${ordering}`;
-		} else {
-			parsedOrder = ordering < 0 ? "$desc" : "$asc";
-		}
-
-		return this._mergeArray(['$order_by', [parsedOrder, order_by]]);
-	}
-
-	pluck(fields) {
-		return this._mergeArray(['$pluck', fields]);
-	}
-
-	without(fields) {
-		return this._mergeArray(['$without', fields]);
-	}
-
-	pageSize(size) {
-		return this._mergeArray(['$limit', size]);
-	}
-
-	index(indexName) {
-		return this._mergeArray(['$index', indexName]);
-	}
-
-	filter(params) {
-		var filterIndex = _.findIndex(this._state['$query'], (item) => {
-			return item[0] === '$filter';
-		});
-		var filters = this._state['$query'][filterIndex];
-
-		Object.keys(params).forEach((key) => {
-			var [field, operator] = key.split("__");
-			var queryField = operator ? [`$${operator}`, params[key]] : params[key];
-
-			filters[1].push([field, queryField]);
-		})
-
-		return this._mergeArray(filters);
-	}
-
-	where(params) {
-		//alias
-		return this.filter(params);
-	}
-
-	between(params) {
-		if (params && params.from && params.to) {
-			return this._mergeArray(['$between', [params.from, params.to, params.index]], true)
-		}
-		return this;
+		this.schema = schema;
+		this.terms = [];
 	}
 
 	toJS() {
-		return this._state;
+		return {
+			$schema: this.schema,
+			$query: this.terms
+		};
+	}
+
+	get(id) {
+		this.terms.push(['$get', id]);
+		return this;
+	}
+
+	getAll(ids, index = 'id') {
+		this.terms.push(['$get_all', [index, ids]]);
+		return this;
+	}
+
+	filter(...filters) {
+		var filterSet = filters.reduce((filterSet, currentFilter) => {
+			return filterSet.concat(currentFilter.toJS());
+		}, []);
+
+		this.terms.push(['$filter', filterSet]);
+		return this;
+	}
+
+	hasFields(...fields) {
+		this.terms.push(['$has_fields', fields])
+		return this;
+	}
+
+	withFields(...fields) {
+		this.terms.push(['$with_fields', fields])
+		return this;
+	}
+
+	orderBy(field, ordering = 'asc') {
+		if(ordering !== 'asc' && ordering !== 'desc') {
+			throw new Error('ordering must be desc or asc');
+		}
+
+		ordering = '$' + ordering;
+		this.terms.push(['$order_by', field, ordering])
+		return this;
+	}
+
+	skip(num) {
+		this.terms.push(['$skip', num]);
+		return this;
+	}
+
+	limit(num) {
+		this.terms.push(['$limit', num]);
+		return this;
+	}
+
+	slice(start, end) {
+		this.terms.push(['$slice', [start, end]]);
+		return this;
+	}
+
+	nth(num) {
+		this.terms.push(['$nth', num]);
+		return this;
+	}
+
+	sample(num) {
+		this.terms.push(['$sample', num]);
+		return this;
+	}
+
+	pluck(...fields) {
+		this.terms.push(['$pluck', fields]);
+		return this;
+	}
+
+	without(...fields) {
+		this.terms.push(['$without', fields]);
+		return this;
+	}
+
+	group(field) {
+		this.terms.push(['$group', field]);
+		return this;
+	}
+
+	count() {
+		this.terms.push(['$count']);
+		return this;
+	}
+
+	sum(field) {
+		this.terms.push(['$sum', field]);
+		return this;
+	}
+
+	avg(field) {
+		this.terms.push(['$avg', field]);
+		return this;
+	}
+
+	min(field) {
+		this.terms.push(['$min', field]);
+		return this;
+	}
+
+	max(field) {
+		this.terms.push(['$max', field]);
+		return this;
+	}
+
+	between(start, end, index) {
+		var value = index ? [start, end, index] : [start, end];
+		this.terms.push(['$between', value]);
+		return this;
 	}
 }
