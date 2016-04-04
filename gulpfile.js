@@ -14,7 +14,7 @@ gulp.task('test', function () {
 	require('babel-core/register');
 
 	return gulp.src('tests/**/*_test.js', { read: false })
-		.pipe(mocha());
+		.pipe(mocha({ reporter: 'min'}));
 });
 
 gulp.task('webpack', function () {
