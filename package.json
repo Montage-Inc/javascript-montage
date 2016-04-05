@@ -1,7 +1,7 @@
 {
   "name": "montagedata",
   "version": "2.1.0",
-  "main": "dist/index.js",
+  "main": "dist/montage.js",
   "description": "Client library for Montage Data",
   "scripts": {
     "test": "gulp test"
