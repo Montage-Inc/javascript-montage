@@ -7,6 +7,7 @@ import FileAPI from './api/file';
 import RoleAPI from './api/role';
 import SchemaAPI from './api/schema';
 import UserAPI from './api/user';
+import PolicyAPI from './api/policy';
 
 const BASE_URL = 'mntge.com';
 
@@ -20,6 +21,7 @@ export default class Client {
 		this.users = new UserAPI(this);
 		this.roles = new RoleAPI(this);
 		this.files = new FileAPI(this);
+		this.policy = new PolicyAPI(this);
 	}
 
 	url(endpoint) {
