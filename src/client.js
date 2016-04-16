@@ -25,7 +25,7 @@ export default class Client {
 	}
 
 	url(endpoint) {
-		return `http://${this.hostname}/api/v1/${endpoint}`;
+		return `https://${this.hostname}/api/v1/${endpoint}`;
 	}
 
 	authenticate(email, password) {
