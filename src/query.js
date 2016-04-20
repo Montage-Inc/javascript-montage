@@ -125,12 +125,12 @@ export default class Query {
 		return this;
 	}
 
-	get_intersecting(geometry, index) {
+	getIntersecting(geometry, index) {
 		this.terms.push(['$get_intersecting', [index, geometry]]);
 		return this;
 	}
 
-	get_nearest(geometry, index) {
+	getNearest(geometry, index) {
 		this.terms.push(['$get_nearest', [index, geometry]]);
 		return this;
 	}
