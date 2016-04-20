@@ -15505,6 +15505,18 @@ return /******/ (function(modules) { // webpackBootstrap
 				this.terms.push(['$between', value]);
 				return this;
 			}
+		}, {
+			key: 'getIntersecting',
+			value: function getIntersecting(geometry, index) {
+				this.terms.push(['$get_intersecting', [index, geometry]]);
+				return this;
+			}
+		}, {
+			key: 'getNearest',
+			value: function getNearest(geometry, index) {
+				this.terms.push(['$get_nearest', [index, geometry]]);
+				return this;
+			}
 		}]);
 		return Query;
 	}();
