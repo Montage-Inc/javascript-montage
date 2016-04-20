@@ -170,4 +170,26 @@ describe('Query', () => {
 			expect(query.terms).to.eql([['$between', [0, 10, 'rank']]]);
 		});
 	});
+
+	describe('#get_intersecting()', () => {
+		it('sets get_intersecting', () => {
+			var point = {
+	            'type': 'Point',
+	            'coordinates': [-120.34589052200315, 36.12704320788633]
+	        };
+			query.get_intersecting(point, 'location');
+			expect(query.terms).to.eql([['$get_intersecting', ['location', point]]]);
+		});
+	});
+
+	describe('#get_nearest()', () => {
+		it('sets get_nearest', () => {
+			var point = {
+	            'type': 'Point',
+	            'coordinates': [-120.34589052200315, 36.12704320788633]
+	        };
+			query.get_nearest(point, 'location');
+			expect(query.terms).to.eql([['$get_nearest', ['location', point]]]);
+		});
+	});
 });

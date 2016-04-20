@@ -124,4 +124,14 @@ export default class Query {
 		this.terms.push(['$between', value]);
 		return this;
 	}
+
+	get_intersecting(geometry, index) {
+		this.terms.push(['$get_intersecting', [index, geometry]]);
+		return this;
+	}
+
+	get_nearest(geometry, index) {
+		this.terms.push(['$get_nearest', [index, geometry]]);
+		return this;
+	}
 }
