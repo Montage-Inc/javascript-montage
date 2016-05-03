@@ -65,6 +65,13 @@ describe('Client', () => {
 				expect(client.url('')).to.be('https://testco.not-mntge.com/api/v1/');
 			});
 		});
+
+		context('when a custom protocol is supplied', () => {
+			it('should use the supplied protocol', () => {
+				client.protocol = 'test';
+				expect(client.url('')).to.be('test://testco.mntge.com/api/v1/');
+			});
+		});
 	});
 
 	describe('#authenticate()', (done) => {
