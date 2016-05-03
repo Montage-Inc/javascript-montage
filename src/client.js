@@ -9,11 +9,11 @@ import SchemaAPI from './api/schema';
 import UserAPI from './api/user';
 import PolicyAPI from './api/policy';
 
-const BASE_URL = 'mntge.com';
-
 export default class Client {
-	constructor(subdomain, token, url = BASE_URL) {
-		this.hostname = `${subdomain}.${url}`;
+	constructor(project, token) {
+		this.protocol = 'https';
+		this.host = 'mntge.com';
+		this.project = project;
 		this.token = token;
 
 		this.documents = new DocumentAPI(this);
@@ -25,7 +25,7 @@ export default class Client {
 	}
 
 	url(endpoint) {
-		return `https://${this.hostname}/api/v1/${endpoint}`;
+		return `${this.protocol}://${this.project}.${this.host}/api/v1/${endpoint}`;
 	}
 
 	authenticate(email, password) {

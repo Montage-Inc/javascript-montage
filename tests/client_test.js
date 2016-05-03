@@ -54,25 +54,23 @@ describe('Client', () => {
 		client = new MockedClient('testco');
 	});
 
-	describe('initialization', () => {
-		context('when a url argument is not supplied', () => {
-			it('should set the hostname to the Montage production site', () => {
-				var client = new MockedClient('testco');
-				expect(client.hostname).to.be('testco.mntge.com');
-			});
-		});
-
-		context('when a url argument is supplied', () => {
-			it('should set the hostname to the supplied url', () => {
-				var client = new MockedClient('testco', null, 'not-mntge.com');
-				expect(client.hostname).to.be('testco.not-mntge.com');
-			});
-		});
-	});
-
 	describe('#url()', () => {
 		it('should return a url to the specified endpoint', () => {
 			expect(client.url('user/')).to.be('https://testco.mntge.com/api/v1/user/');
+		});
+
+		context('when a custom host is supplied', () => {
+			it('should use the supplied host', () => {
+				client.host = 'not-mntge.com';
+				expect(client.url('')).to.be('https://testco.not-mntge.com/api/v1/');
+			});
+		});
+
+		context('when a custom protocol is supplied', () => {
+			it('should use the supplied protocol', () => {
+				client.protocol = 'test';
+				expect(client.url('')).to.be('test://testco.mntge.com/api/v1/');
+			});
 		});
 	});
 
