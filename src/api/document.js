@@ -3,11 +3,6 @@ export default class DocumentAPI {
 		this.client = client;
 	}
 
-	list(schema) {
-		const endpoint = `schemas/${schema}/documents/`;
-		return this.client.request(endpoint);
-	}
-
 	save(schema, documents) {
 		const endpoint = `schemas/${schema}/documents/`;
 		return this.client.request(endpoint, 'POST', documents);
