@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-fetch';
 import querystring from 'querystring';
 import _ from 'lodash';
+import 'babel-polyfill';
 
 import DocumentAPI from './api/document';
 import FileAPI from './api/file';
