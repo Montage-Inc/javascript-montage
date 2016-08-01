@@ -23,8 +23,14 @@ export default class DocumentAPI {
 		return this.client.request(endpoint, 'PATCH', document);
 	}
 
-	remove(schema, document_id) {
+	delete(schema, document_id) {
 		const endpoint = `schemas/${schema}/documents/${document_id}/`;
 		return this.client.request(endpoint, 'DELETE');
+	}
+
+	remove(schema, document_id) {
+		console.warn("The function remove() is deprecated, use delete().");
+
+		return this.delete(schema, document_id);
 	}
 }
