@@ -36,7 +36,13 @@ export default class RoleAPI {
 		}
 	}
 
-	remove(role) {
+	delete(role) {
 		return this.client.request(`roles/${role}/`, 'DELETE');
+	}
+
+	remove(role) {
+		console.warn("The function remove() is deprecated, use delete().");
+
+		return this.delete(role);
 	}
 }
