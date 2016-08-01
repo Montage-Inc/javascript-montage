@@ -40,8 +40,14 @@ export default class PolicyAPI {
 		}
 	}
 
-	remove(policy_id) {
+	delete(policy_id) {
 		return this.client.request(`policy/${policy_id}/`, 'DELETE');
+	}
+
+	remove(policy_id) {
+		console.warn("The function remove() is deprecated, use delete().");
+
+		return this.delete(policy_id);
 	}
 
 	checkPermission(action, resource) {
