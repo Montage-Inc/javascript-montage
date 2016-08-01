@@ -36,7 +36,13 @@ export default class UserAPI {
 		}
 	}
 
-	remove(user_id) {
+	delete(user_id) {
 		return this.client.request(`users/${user_id}/`, 'DELETE');
+	}
+
+	remove(user_id) {
+		console.warn("The function remove() is deprecated, use delete().");
+
+		return this.delete(user_id);
 	}
 }
