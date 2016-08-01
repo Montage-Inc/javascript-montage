@@ -32,7 +32,13 @@ export default class SchemaAPI {
 		}
 	}
 
-	remove(schema) {
+	delete(schema) {
 		return this.client.request(`schemas/${schema}/`, 'DELETE');
+	}
+
+	remove(schema) {
+		console.warn("The function remove() is deprecated, use delete().");
+
+		return this.delete(schema);
 	}
 }
