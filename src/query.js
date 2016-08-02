@@ -16,6 +16,8 @@ export default class Query {
 		};
 	}
 
+	// Selecting Data
+
 	get(id) {
 		this.terms.push(['$get', {id}]);
 		return this;
@@ -44,6 +46,8 @@ export default class Query {
 		this.terms.push(['$between', value]);
 		return this;
 	}
+
+	// Transformations
 
 	hasFields(...fields) {
 		this.terms.push(['$has_fields', {fields}])
@@ -104,6 +108,8 @@ export default class Query {
 		return this;
 	}
 
+	// Manipulation
+
 	pluck(...fields) {
 		this.terms.push(['$pluck', fields]);
 		return this;
@@ -113,6 +119,8 @@ export default class Query {
 		this.terms.push(['$without', {fields}]);
 		return this;
 	}
+
+	// Aggregation
 
 	group(field) {
 		this.terms.push(['$group', {field}]);
@@ -143,6 +151,8 @@ export default class Query {
 		this.terms.push(['$max', {field}]);
 		return this;
 	}
+
+	// Geospatial
 
 	getIntersecting(geometry, index) {
 		this.terms.push(['$get_intersecting', [{index, geometry}]]);
