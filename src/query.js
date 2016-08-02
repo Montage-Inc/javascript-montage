@@ -35,6 +35,16 @@ export default class Query {
 		return this;
 	}
 
+	between(options) {
+		const defaults = {
+			lowerKey: '$minval',
+			upperKey: '$maxval'
+		};
+		const value = _.assign(defaults, options);
+		this.terms.push(['$between', value]);
+		return this;
+	}
+
 	hasFields(...fields) {
 		this.terms.push(['$has_fields', {fields}])
 		return this;
@@ -133,16 +143,6 @@ export default class Query {
 		this.terms.push(['$max', {field}]);
 		return this;
 	}
-
-	between(options) {
-		const defaults = {
-			lowerKey: '$minval',
-			upperKey: '$maxval'
-		};
-		const value = _.assign(defaults, options);
-		this.terms.push(['$between', value]);
-		return this;
-}
 
 	getIntersecting(geometry, index) {
 		this.terms.push(['$get_intersecting', [{index, geometry}]]);
