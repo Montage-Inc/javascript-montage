@@ -10,18 +10,19 @@ export default class Query {
 
 	toJS() {
 		return {
+			$type: 'query',
 			$schema: this.schema,
 			$query: this.terms
 		};
 	}
 
 	get(id) {
-		this.terms.push(['$get', id]);
+		this.terms.push(['$get', {id}]);
 		return this;
 	}
 
 	getAll(ids, index = 'id') {
-		this.terms.push(['$get_all', [index, ids]]);
+		this.terms.push(['$get_all', [{index, ids}]]);
 		return this;
 	}
 
@@ -30,17 +31,17 @@ export default class Query {
 			return filterSet.concat(currentFilter.toJS());
 		}, []);
 
-		this.terms.push(['$filter', filterSet]);
+		this.terms.push(['$filter', {filterSet}]);
 		return this;
 	}
 
 	hasFields(...fields) {
-		this.terms.push(['$has_fields', fields])
+		this.terms.push(['$has_fields', {fields}])
 		return this;
 	}
 
 	withFields(...fields) {
-		this.terms.push(['$with_fields', fields])
+		this.terms.push(['$with_fields', {fields}])
 		return this;
 	}
 
@@ -55,27 +56,27 @@ export default class Query {
 	}
 
 	skip(num) {
-		this.terms.push(['$skip', num]);
+		this.terms.push(['$skip', {num}]);
 		return this;
 	}
 
 	limit(num) {
-		this.terms.push(['$limit', num]);
+		this.terms.push(['$limit', {num}]);
 		return this;
 	}
 
 	slice(start, end) {
-		this.terms.push(['$slice', [start, end]]);
+		this.terms.push(['$slice', [{start, end}]]);
 		return this;
 	}
 
 	nth(num) {
-		this.terms.push(['$nth', num]);
+		this.terms.push(['$nth', {num}]);
 		return this;
 	}
 
 	sample(num) {
-		this.terms.push(['$sample', num]);
+		this.terms.push(['$sample', {num}]);
 		return this;
 	}
 
@@ -85,12 +86,12 @@ export default class Query {
 	}
 
 	without(...fields) {
-		this.terms.push(['$without', fields]);
+		this.terms.push(['$without', {fields}]);
 		return this;
 	}
 
 	group(field) {
-		this.terms.push(['$group', field]);
+		this.terms.push(['$group', {field}]);
 		return this;
 	}
 
@@ -100,38 +101,42 @@ export default class Query {
 	}
 
 	sum(field) {
-		this.terms.push(['$sum', field]);
+		this.terms.push(['$sum', {field}]);
 		return this;
 	}
 
 	avg(field) {
-		this.terms.push(['$avg', field]);
+		this.terms.push(['$avg', {field}]);
 		return this;
 	}
 
 	min(field) {
-		this.terms.push(['$min', field]);
+		this.terms.push(['$min', {field}]);
 		return this;
 	}
 
 	max(field) {
-		this.terms.push(['$max', field]);
+		this.terms.push(['$max', {field}]);
 		return this;
 	}
 
-	between(start, end, index) {
-		var value = index ? [start, end, index] : [start, end];
+	between(options) {
+		const defaults = {
+			lowerKey: '$minval',
+			upperKey: '$maxval'
+		};
+		const value = _.assign(defaults, options);
 		this.terms.push(['$between', value]);
 		return this;
-	}
+}
 
 	getIntersecting(geometry, index) {
-		this.terms.push(['$get_intersecting', [index, geometry]]);
+		this.terms.push(['$get_intersecting', [{index, geometry}]]);
 		return this;
 	}
 
 	getNearest(geometry, index) {
-		this.terms.push(['$get_nearest', [index, geometry]]);
+		this.terms.push(['$get_nearest', [{index, geometry}]]);
 		return this;
 	}
 }
