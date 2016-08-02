@@ -24,7 +24,7 @@ export default class Query {
 	}
 
 	getAll(ids, index = 'id') {
-		this.terms.push(['$get_all', [{index, ids}]]);
+		this.terms.push(['$get_all', {index, ids}]);
 		return this;
 	}
 
@@ -39,11 +39,11 @@ export default class Query {
 
 	between(options) {
 		const defaults = {
-			lowerKey: '$minval',
-			upperKey: '$maxval'
+			lowerKey : '$minval',
+			upperKey : '$maxval'
 		};
-		const value = _.assign(defaults, options);
-		this.terms.push(['$between', value]);
+		const params = _.assign(defaults, options);
+		this.terms.push(['$between', params]);
 		return this;
 	}
 
@@ -59,23 +59,24 @@ export default class Query {
 		return this;
 	}
 
-	orderBy(key = null, index = null, ordering = '$asc') {
+	orderBy({key, index, ordering}) {
+		ordering = (ordering === undefined) ? '$asc' : ordering;
 		if(['asc', 'desc'].indexOf(ordering) !== -1) {
 			console.warn('asc/desc parameters deprecated. Please use $asc/$desc.');
 			ordering = '$' + ordering;
 		}
 
-		if(['$asc', '$desc'].indexOf(ordering) !== -1) {
-			throw new Error('ordering must be desc or asc');
+		if(['$asc', '$desc'].indexOf(ordering) === -1) {
+			throw new Error('ordering must be $desc or $asc');
 		}
 
 		var params = { ordering };
 
-		if(key !== null) {
+		if(key !== undefined) {
 			params.key = key;
 		}
 
-		if(index !== null) {
+		if(index !== undefined) {
 			params.index = index;
 		}
 
@@ -94,7 +95,7 @@ export default class Query {
 	}
 
 	slice(startOffset, endOffset) {
-		this.terms.push(['$slice', [{startOffset, endOffset}]]);
+		this.terms.push(['$slice', {startOffset, endOffset}]);
 		return this;
 	}
 
@@ -111,7 +112,7 @@ export default class Query {
 	// Manipulation
 
 	pluck(...fields) {
-		this.terms.push(['$pluck', fields]);
+		this.terms.push(['$pluck', {fields}]);
 		return this;
 	}
 
@@ -155,19 +156,19 @@ export default class Query {
 	// Geospatial
 
 	getIntersecting(geometry, index) {
-		this.terms.push(['$get_intersecting', [{index, geometry}]]);
+		this.terms.push(['$get_intersecting', {index, geometry}]);
 		return this;
 	}
 
 	getNearest(geometry, index) {
-		this.terms.push(['$get_nearest', [{index, geometry}]]);
+		this.terms.push(['$get_nearest', {index, geometry}]);
 		return this;
 	}
 
 	// Delete
 
 	delete(durability = 'hard', return_changes = false) {
-		this.terms.push(['$delete', [{durability, return_changes}]]);
+		this.terms.push(['$delete', {durability, return_changes}]);
 		return this;
 	}
 }
