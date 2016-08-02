@@ -45,13 +45,27 @@ export default class Query {
 		return this;
 	}
 
-	orderBy(field, ordering = 'asc') {
-		if(ordering !== 'asc' && ordering !== 'desc') {
+	orderBy(key = null, index = null, ordering = '$asc') {
+		if(['asc', 'desc'].indexOf(ordering) != -1) {
+			console.warn('asc/desc parameters deprecated. Please use $asc/$desc.');
+			ordering = '$' + ordering;
+		}
+
+		if(['$asc', '$desc'].indexOf(ordering) != -1) {
 			throw new Error('ordering must be desc or asc');
 		}
 
-		ordering = '$' + ordering;
-		this.terms.push(['$order_by', field, ordering])
+		var params = { ordering };
+
+		if(key !== null) {
+			params.key = key;
+		}
+
+		if(index !== null) {
+			params.index = index;
+		}
+
+		this.terms.push(['$order_by', params]);
 		return this;
 	}
 
