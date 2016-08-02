@@ -83,28 +83,28 @@ export default class Query {
 		return this;
 	}
 
-	skip(num) {
-		this.terms.push(['$skip', {num}]);
+	skip(n) {
+		this.terms.push(['$skip', {n}]);
 		return this;
 	}
 
-	limit(num) {
-		this.terms.push(['$limit', {num}]);
+	limit(n) {
+		this.terms.push(['$limit', {n}]);
 		return this;
 	}
 
-	slice(start, end) {
-		this.terms.push(['$slice', [{start, end}]]);
+	slice(startOffset, endOffset) {
+		this.terms.push(['$slice', [{startOffset, endOffset}]]);
 		return this;
 	}
 
-	nth(num) {
-		this.terms.push(['$nth', {num}]);
+	nth(n) {
+		this.terms.push(['$nth', {n}]);
 		return this;
 	}
 
-	sample(num) {
-		this.terms.push(['$sample', {num}]);
+	sample(n) {
+		this.terms.push(['$sample', {n}]);
 		return this;
 	}
 
