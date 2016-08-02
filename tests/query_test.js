@@ -34,7 +34,7 @@ describe('Query', () => {
 	describe('#getAll()', () => {
 		it('sets getAll', () => {
 			query.getAll(['1234', 'abcd']);
-			expect(query.terms).to.eql([['$get_all', [{'ids': ['1234', 'abcd'], 'index': 'id'}]]]);
+			expect(query.terms).to.eql([['$get_all', {'ids': ['1234', 'abcd'], 'index': 'id'}]]);
 		});
 	});
 
@@ -55,22 +55,22 @@ describe('Query', () => {
 	describe('#orderBy()', () => {
 		context('when no direction supplied', () => {
 			it('sets order_by and default direction', () => {
-				query.orderBy('rating');
-				expect(query.terms).to.eql([['$order_by', 'rating', '$asc']]);
+				query.orderBy({'key': 'rating'});
+				expect(query.terms).to.eql([['$order_by', {key: 'rating', ordering: '$asc'}]]);
 			});
 		});
 
 		context('when direction is ascending', () => {
 			it('sets order_by and ascending direction', () => {
-				query.orderBy('rating', '$asc');
-				expect(query.terms).to.eql([['$order_by', 'rating', '$asc']]);
+				query.orderBy({'key': 'rating', ordering: '$asc'});
+				expect(query.terms).to.eql([['$order_by', {key: 'rating', ordering: '$asc'}]]);
 			});
 		});
 
 		context('when direction is descending', () => {
 			it('sets order_by and descending direction', () => {
-				query.orderBy('rating', '$desc');
-				expect(query.terms).to.eql([['$order_by', 'rating', '$desc']]);
+				query.orderBy({'key': 'rating', ordering: '$desc'});
+				expect(query.terms).to.eql([['$order_by', {key: 'rating', ordering: '$desc'}]]);
 			});
 		});
 
@@ -98,7 +98,7 @@ describe('Query', () => {
 	describe('#slice()', () => {
 		it('sets slice', () => {
 			query.slice(10, 20);
-			expect(query.terms).to.eql([['$slice', [{'startOffset': 10, 'endOffset': 20}]]]);
+			expect(query.terms).to.eql([['$slice', {'startOffset': 10, 'endOffset': 20}]]);
 		});
 	});
 
@@ -119,7 +119,7 @@ describe('Query', () => {
 	describe('#pluck()', () => {
 		it('sets pluck', () => {
 			query.pluck('name', 'rank', 'rating');
-			expect(query.terms).to.eql([['$pluck', ['name', 'rank', 'rating']]]);
+			expect(query.terms).to.eql([['$pluck', {'fields': ['name', 'rank', 'rating']}]]);
 		});
 	});
 
@@ -167,21 +167,24 @@ describe('Query', () => {
 
 	describe('#between()', () => {
 		it('sets between', () => {
-			query.between(0, 10, 'rank');
-			expect(query.terms).to.eql([['$between', [0, 10, 'rank']]]);
+			var params = {
+				lowerKey: 0,
+				upperKey: 10,
+				index: 'rank',
+			}
+			query.between(params);
+			expect(query.terms).to.eql([['$between', params]]);
 		});
 	});
 
 	describe('#getIntersecting()', () => {
 		it('sets get_intersecting', () => {
 			var point = {
-				'geometry': {
-					'coordinates': [-120.34589052200315, 36.12704320788633],
-					'type': 'Point'
-				}
+				'coordinates': [-120.34589052200315, 36.12704320788633],
+				'type': 'Point'
 			};
 			query.getIntersecting(point, 'location');
-			expect(query.terms).to.eql([['$get_intersecting', [{'index': 'location', point}]]]);
+			expect(query.terms).to.eql([['$get_intersecting', {index: 'location', geometry: point}]]);
 		});
 	});
 
@@ -192,7 +195,7 @@ describe('Query', () => {
 	            'coordinates': [-120.34589052200315, 36.12704320788633]
 	        };
 			query.getNearest(point, 'location');
-			expect(query.terms).to.eql([['$get_nearest', ['location', point]]]);
+			expect(query.terms).to.eql([['$get_nearest', {index: 'location', geometry: point}]]);
 		});
 	});
 });
