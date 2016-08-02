@@ -163,4 +163,11 @@ export default class Query {
 		this.terms.push(['$get_nearest', [{index, geometry}]]);
 		return this;
 	}
+
+	// Delete
+
+	delete(durability = 'hard', return_changes = false) {
+		this.terms.push(['$delete', [{durability, return_changes}]]);
+		return this;
+	}
 }
