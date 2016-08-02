@@ -60,12 +60,12 @@ export default class Query {
 	}
 
 	orderBy(key = null, index = null, ordering = '$asc') {
-		if(['asc', 'desc'].indexOf(ordering) != -1) {
+		if(['asc', 'desc'].indexOf(ordering) !== -1) {
 			console.warn('asc/desc parameters deprecated. Please use $asc/$desc.');
 			ordering = '$' + ordering;
 		}
 
-		if(['$asc', '$desc'].indexOf(ordering) != -1) {
+		if(['$asc', '$desc'].indexOf(ordering) !== -1) {
 			throw new Error('ordering must be desc or asc');
 		}
 
