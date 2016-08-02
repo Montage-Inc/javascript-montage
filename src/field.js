@@ -45,8 +45,8 @@ export default class Field {
 		return this;
 	}
 
-	inSet(...values) {
-		this.filters.push(["$in", values]);
+	inSet(value) {
+		this.filters.push(["$in", value]);
 		return this;
 	}
 
