@@ -13,7 +13,7 @@ export default class TaskAPI {
 			payload.token = token;
 		}
 		if (timeLimit) {
-			payload.timeLimit = timeLimit;
+			payload.time_limit = timeLimit;
 		}
 
 		return this.client.request(`tasks/`, 'POST', payload);
