@@ -45,9 +45,14 @@ export default class Field {
 		return this;
 	}
 
-	inSet(value) {
+	in(value) {
 		this.filters.push(["$in", value]);
 		return this;
+	}
+
+	inSet(value) {
+		console.warn("The function inSet() is deprecated, use in().");
+		return this.in(value);
 	}
 
 	contains(value) {
