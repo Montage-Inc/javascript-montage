@@ -64,10 +64,10 @@ describe('Field', () => {
 		});
 	});
 
-	describe('#inSet()', () => {
+	describe('#in()', () => {
 		it('should equal a filter with a value of $in', () => {
 			let expectedFilter = [['$in', 'y']];
-			expect(field.inSet('y').filters).to.be.eql(expectedFilter);
+			expect(field.in('y').filters).to.be.eql(expectedFilter);
 		});
 	});
 
