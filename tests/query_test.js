@@ -17,6 +17,7 @@ describe('Query', () => {
 	describe('#toJS()', () => {
 		it('should return a query object', () => {
 			expect(query.toJS()).to.eql({
+				$type: 'query',
 				$schema: 'testSchema',
 				$query: []
 			});

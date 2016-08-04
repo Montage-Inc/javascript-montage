@@ -10,6 +10,7 @@ export default class Query {
 
 	toJS() {
 		return {
+                        $type: 'query',
 			$schema: this.schema,
 			$query: this.terms
 		};
