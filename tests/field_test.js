@@ -78,10 +78,10 @@ describe('Field', () => {
 		});
 	});
 
-	describe('#regex()', () => {
-		it('should equal a filter with a value of $regex', () => {
-			let expectedFilter = [['$regex', 'y']];
-			expect(field.regex('y').filters).to.be.eql(expectedFilter);
+	describe('#match()', () => {
+		it('should equal a filter with a value of $match', () => {
+			let expectedFilter = [['$match', 'y']];
+			expect(field.match('y').filters).to.be.eql(expectedFilter);
 		});
 	});
 
