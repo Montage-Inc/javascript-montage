@@ -8,8 +8,9 @@ export default class RoleAPI {
 		return this.client.request(`roles/`, 'POST', payload);
 	}
 
-	list() {
-		return this.client.request(`roles/`);
+	list(params) {
+		params = params ? params : {};
+		return this.client.request(`roles/`, 'GET', params);
 	}
 
 	get(role) {

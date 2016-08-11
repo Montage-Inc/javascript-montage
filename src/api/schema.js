@@ -8,8 +8,9 @@ export default class SchemaAPI {
 		return this.client.request('schemas/', 'POST', payload);
 	}
 
-	list() {
-		return this.client.request('schemas/');
+	list(params) {
+		params = params ? params : {};
+		return this.client.request('schemas/', 'GET', params);
 	}
 
 	get(schema) {

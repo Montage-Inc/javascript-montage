@@ -3,8 +3,9 @@ export default class FileAPI {
 		this.client = client;
 	}
 
-	list() {
-		return this.client.request('files/');
+	list(params) {
+		params = params ? params : {};
+		return this.client.request('files/', 'GET', params);
 	}
 
 	get(file_id) {

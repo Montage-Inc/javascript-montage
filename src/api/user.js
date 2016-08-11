@@ -3,8 +3,9 @@ export default class UserAPI {
 		this.client = client
 	}
 
-	list() {
-		return this.client.request('users/');
+	list(params) {
+		params = params ? params : {};
+		return this.client.request('users/', 'GET', params);
 	}
 
 	create(full_name, email, password) {
