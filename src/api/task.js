@@ -3,7 +3,7 @@ export default class TaskAPI {
 		this.client = client;
 	}
 
-	run(command, image, token, timeLimit) {
+	run(command, { image, token, timeLimit }) {
 		const payload = { command };
 
 		if (image) {
