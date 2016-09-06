@@ -7,7 +7,7 @@ export default class ProjectAPI {
 		return this.client.request(`project`);
 	}
 
-	update(name, subdomain) {
+	update({ name, subdomain }) {
 		var payload = {};
 
 		if(name) {
