@@ -5,6 +5,7 @@ import _ from 'lodash';
 import DocumentAPI from './api/document';
 import FileAPI from './api/file';
 import RoleAPI from './api/role';
+import ProjectAPI from './api/project';
 import SchemaAPI from './api/schema';
 import UserAPI from './api/user';
 import PolicyAPI from './api/policy';
@@ -20,6 +21,7 @@ export default class Client {
 		this.schemas = new SchemaAPI(this);
 		this.users = new UserAPI(this);
 		this.roles = new RoleAPI(this);
+		this.project = new ProjectAPI(this);
 		this.files = new FileAPI(this);
 		this.policy = new PolicyAPI(this);
 	}
