@@ -60,9 +60,14 @@ export default class Field {
 		return this;
 	}
 
-	regex(expression) {
-		this.filters.push(["$regex", expression]);
+	match(expression) {
+		this.filters.push(["$match", expression]);
 		return this;
+	}
+
+	regex(expression) {
+		console.warn("The function regex() is deprecated, please use match().");
+		return this.match(expression)
 	}
 
 	starts(value) {
