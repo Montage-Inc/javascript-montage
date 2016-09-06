@@ -10,10 +10,10 @@ import UserAPI from './api/user';
 import PolicyAPI from './api/policy';
 
 export default class Client {
-	constructor(project, token) {
+	constructor(subdomain, token) {
 		this.protocol = 'https';
 		this.host = 'mntge.com';
-		this.project = project;
+		this.subdomain = subdomain;
 		this.token = token;
 
 		this.documents = new DocumentAPI(this);
@@ -25,7 +25,7 @@ export default class Client {
 	}
 
 	url(endpoint) {
-		return `${this.protocol}://${this.project}.${this.host}/api/v1/${endpoint}`;
+		return `${this.protocol}://${this.subdomain}.${this.host}/api/v1/${endpoint}`;
 	}
 
 	authenticate(email, password) {
