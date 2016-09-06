@@ -1,6 +1,7 @@
 import fetch from 'isomorphic-fetch';
 import querystring from 'querystring';
 import _ from 'lodash';
+import 'babel-polyfill';
 
 import DocumentAPI from './api/document';
 import FileAPI from './api/file';
@@ -8,6 +9,7 @@ import RoleAPI from './api/role';
 import SchemaAPI from './api/schema';
 import UserAPI from './api/user';
 import PolicyAPI from './api/policy';
+import TaskAPI from './api/task';
 
 export default class Client {
 	constructor(project, token) {
@@ -22,6 +24,7 @@ export default class Client {
 		this.roles = new RoleAPI(this);
 		this.files = new FileAPI(this);
 		this.policy = new PolicyAPI(this);
+		this.tasks = new TaskAPI(this);
 	}
 
 	url(endpoint) {
