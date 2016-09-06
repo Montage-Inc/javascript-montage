@@ -17,7 +17,7 @@ export default class SchemaAPI {
 		return this.client.request(`schemas/${schema}/`);
 	}
 
-	update(schema, name, fields) {
+	update(schema, { name, fields }) {
 		var payload = {};
 
 		if (name) {

@@ -17,7 +17,7 @@ export default class UserAPI {
 		return this.client.request(`users/${user_id}/`);
 	}
 
-	update(user_id, full_name, email, password) {
+	update(user_id, { full_name, email, password }) {
 		var payload = {};
 
 		if (full_name) {
