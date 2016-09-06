@@ -35,7 +35,7 @@ export default class PolicyAPI {
 			payload.policy = policy;
 		}
 
-		if(payload) {
+		if (Object.keys(payload).length) {
 			return this.client.request(`policy/${policy_id}/`, 'PATCH', payload);
 		}
 	}

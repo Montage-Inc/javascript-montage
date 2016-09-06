@@ -18,7 +18,7 @@ export default class ProjectAPI {
 			payload.subdomain = subdomain;
 		}
 
-		if(payload) {
+		if (Object.keys(payload).length) {
 			return this.client.request(`project`, 'PATCH', payload);
 		}
 	}
