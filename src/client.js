@@ -6,29 +6,31 @@ import 'babel-polyfill';
 import DocumentAPI from './api/document';
 import FileAPI from './api/file';
 import RoleAPI from './api/role';
+import ProjectAPI from './api/project';
 import SchemaAPI from './api/schema';
 import UserAPI from './api/user';
 import PolicyAPI from './api/policy';
 import TaskAPI from './api/task';
 
 export default class Client {
-	constructor(project, token) {
+	constructor(subdomain, token) {
 		this.protocol = 'https';
 		this.host = 'mntge.com';
-		this.project = project;
+		this.subdomain = subdomain;
 		this.token = token;
 
 		this.documents = new DocumentAPI(this);
 		this.schemas = new SchemaAPI(this);
 		this.users = new UserAPI(this);
 		this.roles = new RoleAPI(this);
+		this.project = new ProjectAPI(this);
 		this.files = new FileAPI(this);
 		this.policy = new PolicyAPI(this);
 		this.tasks = new TaskAPI(this);
 	}
 
 	url(endpoint) {
-		return `${this.protocol}://${this.project}.${this.host}/api/v1/${endpoint}`;
+		return `${this.protocol}://${this.subdomain}.${this.host}/api/v1/${endpoint}`;
 	}
 
 	authenticate(email, password) {
