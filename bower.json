@@ -1,0 +1,17 @@
+{
+  "name": "montagedata",
+  "description": "Client library for Montage Data",
+  "main": "dist/montage.js",
+  "authors": [
+    "Jason Kraus <jkraus@editllc.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/Montage-Inc/javascript-montage",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
