@@ -1,6 +1,6 @@
 import expect from 'expect.js';
 import querystring from 'querystring';
-import {Client, Query} from '../src/index';
+import Client from '../src/client';
 import {EventEmitter} from 'events';
 
 var emitter = new EventEmitter();
