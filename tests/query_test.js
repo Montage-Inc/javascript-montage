@@ -55,21 +55,21 @@ describe('Query', () => {
 	describe('#orderBy()', () => {
 		context('when no direction supplied', () => {
 			it('sets order_by and default direction', () => {
-				query.orderBy({'key': 'rating'});
+				query.orderBy({key: 'rating'});
 				expect(query.terms).to.eql([['$order_by', {key: 'rating', ordering: '$asc'}]]);
 			});
 		});
 
 		context('when direction is ascending', () => {
 			it('sets order_by and ascending direction', () => {
-				query.orderBy({'key': 'rating', ordering: '$asc'});
+				query.orderBy({key: 'rating', ordering: '$asc'});
 				expect(query.terms).to.eql([['$order_by', {key: 'rating', ordering: '$asc'}]]);
 			});
 		});
 
 		context('when direction is descending', () => {
 			it('sets order_by and descending direction', () => {
-				query.orderBy({'key': 'rating', ordering: '$desc'});
+				query.orderBy({key: 'rating', ordering: '$desc'});
 				expect(query.terms).to.eql([['$order_by', {key: 'rating', ordering: '$desc'}]]);
 			});
 		});
