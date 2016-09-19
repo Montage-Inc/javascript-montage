@@ -71,13 +71,6 @@ describe('Field', () => {
 		});
 	});
 
-	describe('#contains()', () => {
-		it('should equal a filter with a value of $contains', () => {
-			let expectedFilter = [['$contains', 'y']];
-			expect(field.contains('y').filters).to.eql(expectedFilter);
-		});
-	});
-
 	describe('#match()', () => {
 		it('should equal a filter with a value of $match', () => {
 			let expectedFilter = [['$match', 'y']];
