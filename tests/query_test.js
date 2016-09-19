@@ -171,7 +171,7 @@ describe('Query', () => {
 				lowerKey: 0,
 				upperKey: 10,
 				index: 'rank',
-			}
+			};
 			query.between(params);
 			expect(query.terms).to.eql([['$between', params]]);
 		});
