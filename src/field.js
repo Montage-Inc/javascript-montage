@@ -55,11 +55,6 @@ export default class Field {
 		return this.in(value);
 	}
 
-	contains(value) {
-		this.filters.push(["$contains", value]);
-		return this;
-	}
-
 	match(expression) {
 		this.filters.push(["$match", expression]);
 		return this;
