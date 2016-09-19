@@ -88,7 +88,7 @@ describe('Field', () => {
 	describe('#istarts()', () => {
 		it('should equal a filter with a value of $istarts', () => {
 			let expectedFilter = [['$eq', 'y']];
-			expect(field.eq('y').filters).to.eql(expectedFilter);
+			expect(field.istarts('y').filters).to.eql(expectedFilter);
 		});
 	});
 
