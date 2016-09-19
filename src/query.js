@@ -50,12 +50,12 @@ export default class Query {
 	// Transformations
 
 	hasFields(...fields) {
-		this.terms.push(['$has_fields', {fields}])
+		this.terms.push(['$has_fields', {fields}]);
 		return this;
 	}
 
 	withFields(...fields) {
-		this.terms.push(['$with_fields', {fields}])
+		this.terms.push(['$with_fields', {fields}]);
 		return this;
 	}
 

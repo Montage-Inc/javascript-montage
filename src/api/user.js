@@ -10,7 +10,7 @@ export default class UserAPI {
 
 	create(full_name, email, password) {
 		const payload = { full_name, email, password };
-		return this.client.request('users/', 'POST', payload)
+		return this.client.request('users/', 'POST', payload);
 	}
 
 	get(user_id) {

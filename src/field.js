@@ -67,7 +67,7 @@ export default class Field {
 
 	regex(expression) {
 		console.warn("The function regex() is deprecated, please use match().");
-		return this.match(expression)
+		return this.match(expression);
 	}
 
 	starts(value) {

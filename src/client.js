@@ -48,7 +48,7 @@ export default class Client {
 			return this.request('user/');
 		}
 
-		return Promise.reject('The current user is not authenticated.')
+		return Promise.reject('The current user is not authenticated.');
 	}
 
 	execute(queries) {

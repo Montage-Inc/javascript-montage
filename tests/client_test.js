@@ -118,7 +118,7 @@ describe('Client', () => {
 			client.authenticate('fake@example.com', 'invalid').then(response => {
 				expect().fail();
 			}, error => {
-				expect(error).to.eql([{'detail': 'Incorrect authentication credentials.'}])
+				expect(error).to.eql([{'detail': 'Incorrect authentication credentials.'}]);
 				expect(client.token).to.be(undefined);
 				done();
 			});
