@@ -28,10 +28,13 @@ export default class Query {
 		return this;
 	}
 
-	filter(...filters, kwargs) {
-		params = {predicate: filters}
-		if(kwargs.default !== undefined) {
-			params.default = kwargs.default
+	filter() {
+		var params = {};
+		if (arguments[arguments.length - 1] instanceof Array) {
+			params.predicate = arguments;
+		} else {
+			params.predicate = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
+			params.default = arguments[arguments.length - 1].default;
 		}
 		this.terms.push(['$filter', params]);
 		return this;
