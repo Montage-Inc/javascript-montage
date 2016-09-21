@@ -1,11 +1,14 @@
 import expect from 'expect.js';
 import {Query} from '../src/index';
+import {Field} from '../src/index';
 
 var query;
+var field;
 
 describe('Query', () => {
 	beforeEach(function() {
 		query = new Query('testSchema');
+		field = new Field('x');
 	});
 
 	describe('initialization', () => {
@@ -35,6 +38,77 @@ describe('Query', () => {
 		it('sets getAll', () => {
 			query.getAll(['1234', 'abcd']);
 			expect(query.terms).to.eql([['$get_all', {'ids': ['1234', 'abcd'], 'index': 'id'}]]);
+		});
+	});
+
+	describe('#filter()', () => {
+		context('when ge', () => {
+			var expected = {
+				$type: 'query',
+				$schema: 'testSchema',
+				$query: [
+					['$filter', {'predicate':
+						[['rank', ['$ge', 3]]],
+					}]
+				]
+			};
+
+			it('sets filter', () => {
+				expect(query.filter(new Field('rank').ge(3)).toJS()).to.eql(expected);
+			});
+		});
+
+		context('when multiple', () => {
+			var expected = {
+				$type: 'query',
+				$schema: 'testSchema',
+				$query: [
+					['$filter', {'predicate':
+						[['year', ['$ge', 1990]],
+						['year', ['$lt', 2000]]],
+					}]
+				]
+			};
+
+			it('sets filter', () => {
+				expect(query.filter(new Field('year').ge(1990).lt(2000)).toJS()).to.eql(expected);
+			});
+		});
+
+		context('when or', () => {
+			var expected = {
+				$type: 'query',
+				$schema: 'testSchema',
+				$query: [
+					['$filter', {'predicate':
+						[['year', ['$lt', 1990]],
+						['year', ['$ge', 2000]]],
+					}]
+				]
+			};
+
+			it('sets filter', () => {
+				expect(query.filter(new Field('year').lt(1990).ge(2000)).toJS()).to.eql(expected);
+			});
+		});
+
+		context('when default is set to true', () => {
+			var expected = {
+				$type: 'query',
+				$schema: 'testSchema',
+				$query: [
+					['$filter', {
+						'predicate':[
+							['year', ['$eq', 2000]]
+						],
+						'default': true,
+					}]
+				]
+			};
+
+			it('sets filter', () => {
+				expect(query.filter(new Field('year').eq(2000), {default: true}).toJS()).to.eql(expected);
+			});
 		});
 	});
 
