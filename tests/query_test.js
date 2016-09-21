@@ -205,4 +205,11 @@ describe('Query', () => {
 			expect(query.terms).to.eql([['$get_nearest', {index: 'location', geometry: point}]]);
 		});
 	});
+
+	describe('#delete()', () => {
+		it('sets delete', () => {
+			query.delete('hard', false);
+			expect(query.terms).to.eql([['$delete', {durability: 'hard', return_changes: false}]]);
+		});
+	});
 });
