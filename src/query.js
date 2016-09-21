@@ -28,12 +28,12 @@ export default class Query {
 		return this;
 	}
 
-	filter(...filters) {
-		var filterSet = filters.reduce((filterSet, currentFilter) => {
-			return filterSet.concat(currentFilter.toJS());
-		}, []);
-
-		this.terms.push(['$filter', {filterSet}]);
+	filter(...filters, kwargs) {
+		params = {predicate: filters}
+		if(kwargs.default !== undefined) {
+			params.default = kwargs.default
+		}
+		this.terms.push(['$filter', params]);
 		return this;
 	}
 
