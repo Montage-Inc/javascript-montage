@@ -130,6 +130,13 @@ describe('Query', () => {
 		});
 	});
 
+	describe('#group()', () => {
+		it('sets group', () => {
+			query.group('rank');
+			expect(query.terms).to.eql([['$group', {'field': 'rank'}]]);
+		});
+	});
+
 	describe('#count()', () => {
 		it('sets count', () => {
 			query.count();
