@@ -3,7 +3,7 @@ import Query from './query';
 import Field from './field';
 
 export {
-	Client,
-	Field,
-	Query
+  Client,
+  Field,
+  Query
 };
