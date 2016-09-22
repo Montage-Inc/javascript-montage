@@ -1,97 +1,41 @@
 export default class Field {
 	constructor(field) {
 		this.field = field;
-		this.filters = [];
 	}
 
-	toJS() {
-		return this.filters.map(filter => {
-			return [this.field, filter];
-		});
+	_operator(operator, value){
+		return [this.field, [`$${operator}`, value]]
 	}
 
-	eq(value) {
-		this.filters.push(["$eq", value]);
-		return this;
-	}
+	eq(value){ return this._operator('eq', value); }
+	ne(value){ return this._operator('ne', value); }
+	lt(value){ return this._operator('lt', value); }
+	le(value){ return this._operator('le', value); }
+	gt(value){ return this._operator('gt', value); }
+	ge(value){ return this._operator('ge', value); }
+	ieq(value){ return this._operator('ieq', value); }
+	in(value){ return this._operator('in', value); }
+	match(value){ return this._operator('match', value); }
+	starts(value){ return this._operator('starts', value); }
+	istarts(value){ return this._operator('istarts', value); }
+	ends(value){ return this._operator('ends', value); }
+	iends(value){ return this._operator('iends', value); }
+	intersects(value){ return this._operator('intersects', value); }
+	includes(value){ return this._operator('includes', value); }
 
-	ieq(value) {
-		this.filters.push(["$ieq", value]);
-		return this;
-	}
+    _modifier(modifier){
+        return new Field(`${this.field}.$${modifier}`);
+    }
 
-	ne(value) {
-		this.filters.push(["$ne", value]);
-		return this;
-	}
-
-	lt(value) {
-		this.filters.push(["$lt", value]);
-		return this;
-	}
-
-	le(value) {
-		this.filters.push(["$le", value]);
-		return this;
-	}
-
-	gt(value) {
-		this.filters.push(["$gt", value]);
-		return this;
-	}
-
-	ge(value) {
-		this.filters.push(["$ge", value]);
-		return this;
-	}
-
-	in(value) {
-		this.filters.push(["$in", value]);
-		return this;
-	}
-
-	inSet(value) {
-		console.warn("The function inSet() is deprecated, use in().");
-		return this.in(value);
-	}
-
-	match(expression) {
-		this.filters.push(["$match", expression]);
-		return this;
-	}
-
-	regex(expression) {
-		console.warn("The function regex() is deprecated, please use match().");
-		return this.match(expression);
-	}
-
-	starts(value) {
-		this.filters.push(["$starts", value]);
-		return this;
-	}
-
-	istarts(value) {
-		this.filters.push(["$istarts", value]);
-		return this;
-	}
-
-	ends(value) {
-		this.filters.push(["$ends", value]);
-		return this;
-	}
-
-	iends(value) {
-		this.filters.push(["$iends", value]);
-		return this;
-	}
-
-	intersects(value) {
-		this.filters.push(["$intersects", value]);
-		return this;
-	}
-
-	includes(value) {
-		this.filters.push(["$includes", value]);
-		return this;
-	}
+    date(){ return this._modifier('date'); }
+    time(){ return this._modifier('time'); }
+    year(){ return this._modifier('year'); }
+    month(){ return this._modifier('month'); }
+    day(){ return this._modifier('day'); }
+    hours(){ return this._modifier('hours'); }
+    minutes(){ return this._modifier('minutes'); }
+    seconds(){ return this._modifier('seconds'); }
+    day_of_month(){ return this._modifier('day_of_month'); }
+    day_of_year(){ return this._modifier('day_of_year'); }
+    timezone(){ return this._modifier('timezone'); }
 }

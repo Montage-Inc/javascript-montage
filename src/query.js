@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import Field from './field'
 
 export default class Query {
 	constructor(schema) {
@@ -30,12 +31,14 @@ export default class Query {
 
 	filter() {
 		var params = {};
-		if (arguments[arguments.length - 1] instanceof Array) {
-			params.predicate = arguments;
+
+		if (_.last(arguments) instanceof Array) {
+			params.predicate = _.slice(arguments)
 		} else {
-			params.predicate = Array.prototype.slice.call(arguments, 0, arguments.length - 1);
-			params.default = arguments[arguments.length - 1].default;
+			params.predicate = _.slice(arguments, 0, arguments.length - 1);
+			params.default = _.last(arguments).default;
 		}
+
 		this.terms.push(['$filter', params]);
 		return this;
 	}

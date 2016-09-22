@@ -71,7 +71,10 @@ describe('Query', () => {
 			};
 
 			it('sets filter', () => {
-				expect(query.filter(new Field('year').ge(1990).lt(2000)).toJS()).to.eql(expected);
+				expect(query.filter(
+					new Field('year').ge(1990),
+					new Field('year').lt(2000)
+				).toJS()).to.eql(expected);
 			});
 		});
 
@@ -88,7 +91,10 @@ describe('Query', () => {
 			};
 
 			it('sets filter', () => {
-				expect(query.filter(new Field('year').lt(1990).ge(2000)).toJS()).to.eql(expected);
+				expect(query.filter(
+					new Field('year').lt(1990),
+					new Field('year').ge(2000)
+				).toJS()).to.eql(expected);
 			});
 		});
 
